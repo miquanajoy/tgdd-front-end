@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Create Promotion Page</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="./PromoteAdd.css"/>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  </head>
+
+  <body>
+    <div class="container-xl">
+      <div class="table-responsive">
+        <div class="table-wrapper">
+          <div class="table-title">
+            <div class="row">
+              <div class="col-sm-5">
+                <h2>Add new <b>Promotions</b></h2>               
+                  <a th:href="@{/Admin/ViewPromote}" class="btn btn-success">View promotion</a>          
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="addEmployeeModal">
+          <div class="modal-dialog">
+            <div class="modal-content">         
+                <div class="modal-body">
+                  <div class="form-group">
+                        <div class="container-xl">
+                              <div class="modal-dialog">
+                                <div class="modal-content">                                  
+                                    <div class="modal-header">
+                                      <h4 class="modal-title">
+                                        Add new promotions
+                                      </h4>                                      
+                                    </div>
+                                   
+                                    <div class="modal-body">
+                                      <form th:action="@{/admin/promotions-management/create-promotion}" th:object="${PromoteCreateForm}" method="post">
+                                      
+                                        <!--Promotion Code Name-->
+                                        <div class="form-group">
+                                            <label>Promotion Code Name</label>
+                                            <input type="text" th:field="*{promoteCodeName}" class="form-control"
+                                                  required minlength="6" maxlength="15" value="*{promoteCodeName}">
+				                            <span th:if="${PromoteNameDup != null}" th:utext="${PromoteNameDup}" style="color: red;"></span>
+                                        </div>
+
+                                        <!--Promotion Code Description-->
+                                        <div class="form-group">
+                                          <label>Promotion Code Description</label>
+                                          <input type="text" th:field="*{promoteCodeDescription}" required minlength="10" 
+                                          maxlength="200" class="form-control" value="*{promoteCodeDescription}">
+                                        </div>
+
+                                        <!--Promotion Code Discount Percent-->
+                                        <div class="form-group">
+                                          <label>Promotion Code Discount Percent</label>
+                                          <input type="number" th:field="*{discountPercent}" required min="0" max="70" step="1" 
+                                          value="*{discountPercent}" class="form-control">
+                                        </div>
+                                        
+                                        <!--Promotion Code Discount Max Amount-->
+                                        <div class="form-group">
+                                          <label>Promotion Code Discount Max Amount</label>
+                                          <input type="number" th:field="*{discountMaxAmount}" 
+                                          required min="50000" max="3000000" step="1000" 
+                                          value="*{discountMaxAmount}" class="form-control">
+                                        </div>
+                                        
+                                        <!--Promotion Code Start Date-->
+                                        <div class="form-group">
+                                          <label>Promotion Code Start Date</label>
+                                          <input type="datetime-local" th:field="*{startDateInput}" required
+                                          value="*{startDateInput}" class="form-control"
+                                          th:attr="min=${MinDateTime}, max=${MaxDateTime}">
+                                        </div>
+                                        
+                                        <span th:if="${StartSameAsEnd != null}" th:utext="${StartSameAsEnd}" style="color: red;"></span>
+                                        <span th:if="${StartIsAfterEnd != null}" th:utext="${StartIsAfterEnd}" style="color: red;"></span>
+                                        
+                                        <!--Promotion Code End Date-->
+                                        <div class="form-group">
+                                          <label>Promotion Code End Date</label>
+                                          <input type="datetime-local" th:field="*{EndDateInput}" required
+                                          value="*{EndDateInput}" class="form-control" 
+                                          th:attr="min=${MinDateTime}, max=${MaxDateTime}">
+                                        </div>
+
+                                        <!--Promotion Code Enabling-->
+                                        <div class="form-group">
+                                          <label>Promotion Code Enabling</label>
+                                          <div th:if="${PromoteCreateForm.enabled != null}">
+                                            <input th:if="${PromoteCreateForm.enabled == true}" type="radio" name="EnableCheck" 
+                                                  value="Enable" required="required" checked="checked" id="enableButton">
+                                            
+                                            <input th:unless="${PromoteCreateForm.enabled == true}" type="radio" name="EnableCheck" 
+                                                  value="Enable" required="required" id="enableButton">
+                                            
+                                            <label for="enableButton">Enable</label> 
+                                            
+                                            <input th:if="${PromoteCreateForm.enabled == false}" type="radio" name="EnableCheck" 
+                                                  value="Disable" checked="checked" id="disableButton">
+                                                    
+                                            <input th:unless="${PromoteCreateForm.enabled == false}" type="radio" name="EnableCheck" 
+                                                  value="Disable" id="disableButton">
+                                            
+                                            <label for="disableButton">Disable</label>
+                                          </div>
+
+                                          <div th:if="${PromoteCreateForm.enabled == null}">
+                                            <input type="radio" name="EnableCheck" value="Enable" required="required"> Enable
+                                            <input type="radio" name="EnableCheck" value="Disable" > Disable
+                                          </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                          <input type="submit" class="btn btn-success" value="Create Promote Code">
+                                        </div>
+                                      </form>
+                                </div>
+                                
+                              </div>
+                            
+                          </div>
+                        </div>
+                     
+                    </html>
+                  </div>
+                </div>            
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

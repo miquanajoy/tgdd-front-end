@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
     <head>
-        <meta charset="ISO-8859-1">
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Promote Code Management</title>
+        <title>Bootstrap User Management Data Table</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -28,13 +28,12 @@
                     <div class="table-title">
                         <div class="row">
                             <div class="col-sm-5">
-                                <h2>Promote Code <b>Management</b></h2>
+                                <h2>Products <b>Management</b></h2>
                             </div>
                             <div class="col-sm-7">
                                <!--  <a href="LogoutController" class="btn btn-secondary"><span>Logout</span></a>	 -->
-							   <a th:href="@{/admin/promotions-management/create-promotion}" class="btn btn-success" >
-                                <i class="material-icons">&#xE147;</i> 
-                                <span>Add New Promotion</span></a>
+                                <a th:href="@{/admin/products-management/create-product/choose-category}" class="btn btn-success" ><i class="material-icons">&#xE147;</i> <span>Add New Product</span></a>
+
                             </div>
                         </div>
                     </div>
@@ -43,36 +42,35 @@
                             <tr>
                                 <th >No.</th>
                                 <th >Name</th>
-                                <th >Description</th>
-                                <th >Discount Percent</th>
-                                <th >Discount Amount</th>
-                                <th >Description</th>
-                                <th >Start Date</th>
-                                <th >End Date</th>
-      	  		                <th >Action</th>
+                                <th >Price</th>
+                                <th >Warranty</th>
+                                <th >Image</th>
+                                <th >Interest Rate</th>
+                                <th >Exclusive</th>
+                                <th >Accessories</th>
+                                <th >Enabled</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        	<tr th:unless="${Promotion!= null}">
-                        		<td>Nothing to show here</td>
-                        	</tr>                            
-							<tr th:if="${Promotion!= null}">
-								<td th:utext="${Promotion.promoteCodeID}"></td>
-                                <td th:utext="${Promotion.promoteCodeName}"></td>
-                                <td th:utext="${Promotion.promoteCodeDescription}"></td>
-                                <td th:utext="${Promotion.discountPercent}+'%'"></td>
-                                <td th:utext="${#numbers.formatCurrency(Promotion.discountMaxAmount)}"></td>
-                                <td th:utext="${#temporals.format(Promotion.startDate, 'dd-MM-yyyy HH:mm')}"></td>
-                                <td th:utext="${#temporals.format(Promotion.endDate, 'dd-MM-yyyy HH:mm')}"></td>
-                                <td th:if="${Promotion.enabled== true}" th:utext="Enabled"></td>
-                                <td th:if="${Promotion.enabled== false}" th:utext="Disabled"></td>
-                                
-                                <td>
-                                    <form th:action="@{/admin/promotions-management/update-promotion/{promote} 
-                                    (promote=${Promotion.promoteCodeName}) }" method="get">
-                                        <input type="submit" class="btn btn-success" value="Update">
-                                    </form>
-                                </td>
+                        <tbody>                            
+                                <tr th:each="product, stat: ${ProductList}">
+                                    <td th:utext="${product.productID}"></td>
+                                    <td th:utext="${product.productName}"></td>
+                                    <td th:utext="${#numbers.formatCurrency(product.price)}"></td>
+                                    <td th:utext="${product.productWarranty}"></td>
+                                    <td>
+                                        <img th:src="@{'data:image/;base64,'+${product.imageToShow}}" width="50px" height="50px">
+                                    </td>
+                                    <td th:utext="${product.interestRate}"></td>
+                                    <td th:if="${product.exclusive== true}" th:utext="Yes"></td>
+                                    <td th:if="${product.exclusive== false}" th:utext="No"></td>
+                                    <td th:utext="${product.accessoriesIncluded}"></td>
+                                    <td th:if="${product.enabled== true}" th:utext="Yes"></td>
+                                    <td th:if="${product.enabled== false}" th:utext="No"></td>
+                                    <td>
+                                        <form th:action="@{/admin/products-management/view-or-update-product/step-1/{proID} (proID=${product.productID}) }" method="get">
+                                            <input type="submit" value="Details">
+                                        </form>
+                                    </td>                            
                                 </tr>
                         </tbody>
                     </table>
@@ -81,5 +79,12 @@
             </div>
         </div>   
         <!-- Edit Modal HTML -->
+
+        <script>
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+
     </body>
 </html>
