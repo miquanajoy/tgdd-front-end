@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.group1.dto.CategoryList;
 import com.group1.dto.ProductList;
 import com.group1.dto.PromotionsList;
 
@@ -54,20 +56,49 @@ public class AdminController {
 	}
 
 	@GetMapping("/products-management/view-products")
-	public ModelAndView showAllProducts (ModelAndView model) 
+	public ModelAndView showAllProducts (ModelAndView model, @RequestParam(required = false) Integer category, @RequestParam(required = false) Integer brand) 
 	{
 		RestTemplate resttemp = new RestTemplate();
 		String resourceUrl = "http://localhost:8080/admin/products-management/view-products";
+		
+		if (category != null) {
+			resourceUrl +="?category=" +category;
+			if (brand != null) {
+				resourceUrl += "&brand=" + brand;
+			}
+		}
+		
+		System.out.print(resourceUrl);
 		ResponseEntity<ProductList[]> response = resttemp.getForEntity(resourceUrl, ProductList[].class);
 		List<ProductList> proList = new ArrayList<ProductList>();
+
 		for(int i=0;i< response.getBody().length; i++) 
 		{
 			proList.add(response.getBody()[i]);
 		}
+		
+		
+		RestTemplate restTempCat = new RestTemplate();
+		String resourceUrl2 = "http://localhost:8080/admin/products-management/view-category";
+		ResponseEntity<CategoryList[]> response2 = restTempCat.getForEntity(resourceUrl2, CategoryList[].class);
+		List<CategoryList> CategoryList = new ArrayList<CategoryList>();
+		for(int i=0;i< response2.getBody().length; i++) 
+		{
+			CategoryList.add(response2.getBody()[i]);
+		}
+//		
+//		if (category != null) {
+//			RestTempplate..category.byteValue()
+//			model.addObject("brandList", brand);
+//		}
+		
 		model.addObject("ProductList", proList);
+		model.addObject("cats", CategoryList);
 		model.setViewName("ProductView");
 		return model;
 	}
+	
+	
 	
 	@GetMapping("/promotions-management/create-promotion")
 	public ModelAndView newPromotionInput (ModelAndView model) 
