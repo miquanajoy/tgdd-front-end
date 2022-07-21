@@ -1,96 +1,117 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Bootstrap User Management Data Table</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" th:href="@{/ProductView.css}">
-        
-    </head> 
-    <body>
-        <div class="container-xl">
-            <div class="table-responsive">
-                <div class="table-wrapper">
-                    <div class="table-title">
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <h2>Products <b>Management</b></h2>
-                            </div>
-                            <div class="col-sm-7">
-                               <!--  <a href="LogoutController" class="btn btn-secondary"><span>Logout</span></a>	 -->
-                                <a th:href="@{/admin/products-management/create-product/choose-category}" class="btn btn-success" ><i class="material-icons">&#xE147;</i> <span>Add New Product</span></a>
-                                    <ul>
-                                        <li th:each="category: ${cats}" class="nav-item" style="display: inline;">
-                                            <a th:href="@{'/admin/products-management/view-products?category=' +${category.categoryID}}" th:utext="${category.categoryName}"></a>
-                                        </li>
-                                    </ul>
-                                    <img src="" th:if="${param.category != null}"/>
-                               </div>
-                            </div>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bootstrap User Management Data Table</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" th:href="@{/ProductView.css}">
+
+</head>
+
+<body>
+    <div class="container-xl">
+        <div class="table-responsive">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <h2>Products <b>Management</b></h2>
+                        </div>
+                        <div class="col-sm-7">
+                            <!--  <a href="LogoutController" class="btn btn-secondary"><span>Logout</span></a>	 -->
+                            <a th:href="@{/admin/products-management/create-product/choose-category}"
+                                class="btn btn-success"><i class="material-icons">&#xE147;</i> <span>Add New
+                                    Product</span></a>
+                            <ul>
+                                <li th:each="category: ${cats}" class="nav-item" style="display: inline;">
+                                    <a th:href="@{/admin/products-management/view-products(category=${category.categoryID})}"
+                                        th:utext="${category.categoryName}"></a>
+                                </li>
+                            </ul>
+                            <ul>
+                                <li th:each="manufacturer: ${manu}" class="nav-item" style="display: inline;">
+                                    <!-- <a th:href="@{'/admin/products-management/view-products?category=' + ${param.category} + 
+                                                                '&manufacturer=' + ${manufacturer.manufacturerID}}"
+                                        th:utext="${manufacturer.manufacturerName}"></a> -->
+
+                                        <a th:href="@{/admin/products-management/view-products(category=${param.category},manufacturer=${manufacturer.manufacturerID})}"
+                                        th:utext="${manufacturer.manufacturerName}"></a>
+
+                                </li>
+
+
+
+                            </ul>
                         </div>
                     </div>
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th >No.</th>
-                                <th >Name</th>
-                                <th >Price</th>
-                                <th >Warranty</th>
-                                <th >Image</th>
-                                <th >Interest Rate</th>
-                                <th >Exclusive</th>
-                                <th >Accessories</th>
-                                <th >Enabled</th>
-                            </tr>
-                        </thead>
-                        <tbody>                            
-                                <tr th:each="product, stat: ${ProductList}">
-                                    <td th:utext="${product.productID}"></td>
-                                    <td th:utext="${product.productName}"></td>
-                                    <td th:utext="${#numbers.formatCurrency(product.price)}"></td>
-                                    <td th:utext="${product.productWarranty}"></td>
-                                    <td>
-                                        <img th:src="@{'data:image/;base64,'+${product.imageToShow}}" width="50px" height="50px">
-                                    </td>
-                                    <td th:utext="${product.interestRate}"></td>
-                                    <td th:if="${product.exclusive== true}" th:utext="Yes"></td>
-                                    <td th:if="${product.exclusive== false}" th:utext="No"></td>
-                                    <td th:utext="${product.accessoriesIncluded}"></td>
-                                    <td th:if="${product.enabled== true}" th:utext="Yes"></td>
-                                    <td th:if="${product.enabled== false}" th:utext="No"></td>
-                                    <td>
-                                        <form th:action="@{/admin/products-management/view-or-update-product/step-1/{proID} (proID=${product.productID}) }" method="get">
-                                            <input type="submit" value="Details">
-                                        </form>
-                                    </td>                            
-                                </tr>
-                        </tbody>
-                    </table>
-                    
                 </div>
             </div>
-        </div>   
-        <!-- Edit Modal HTML -->
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Warranty</th>
+                        <th>Image</th>
+                        <th>Interest Rate</th>
+                        <th>Exclusive</th>
+                        <th>Accessories</th>
+                        <th>Enabled</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="product, stat: ${ProductList}">
+                        <td th:utext="${product.productID}"></td>
+                        <td th:utext="${product.productName}"></td>
+                        <td th:utext="${#numbers.formatCurrency(product.price)}"></td>
+                        <td th:utext="${product.productWarranty}"></td>
+                        <td>
+                            <img th:src="@{'data:image/;base64,'+${product.imageToShow}}" width="50px" height="50px">
+                        </td>
+                        <td th:utext="${product.interestRate}"></td>
+                        <td th:if="${product.exclusive== true}" th:utext="Yes"></td>
+                        <td th:if="${product.exclusive== false}" th:utext="No"></td>
+                        <td th:utext="${product.accessoriesIncluded}"></td>
+                        <td th:if="${product.enabled== true}" th:utext="Yes"></td>
+                        <td th:if="${product.enabled== false}" th:utext="No"></td>
+                        <td>
+                            <form
+                                th:action="@{/admin/products-management/view-or-update-product/step-1/{proID} (proID=${product.productID}) }"
+                                method="get">
+                                <input type="submit" value="Details">
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <script>
-            $(document).ready(function () {
-                $('[data-toggle="tooltip"]').tooltip();
-            });
-        </script>
+        </div>
+    </div>
+    </div>
+    <!-- Edit Modal HTML -->
 
-    </body>
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+
+</body>
+
 </html>

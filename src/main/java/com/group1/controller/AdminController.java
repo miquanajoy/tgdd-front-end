@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.group1.dto.CategoryList;
+import com.group1.dto.ManufacturerList;
 import com.group1.dto.ProductList;
 import com.group1.dto.PromotionsList;
 
@@ -56,15 +57,30 @@ public class AdminController {
 	}
 
 	@GetMapping("/products-management/view-products")
-	public ModelAndView showAllProducts (ModelAndView model, @RequestParam(required = false) Integer category, @RequestParam(required = false) Integer brand) 
+	public ModelAndView showAllProducts (ModelAndView model, 
+			@RequestParam(required = false) Integer category, 
+			@RequestParam(required = false) Integer manufacturer) 
 	{
 		RestTemplate resttemp = new RestTemplate();
 		String resourceUrl = "http://localhost:8080/admin/products-management/view-products";
 		
 		if (category != null) {
 			resourceUrl +="?category=" +category;
-			if (brand != null) {
-				resourceUrl += "&brand=" + brand;
+			
+			RestTemplate restTempManu = new RestTemplate();
+			String resourceUrl3 = "http://localhost:8080/admin/products-management/view-manufacturer?categoryId=" +category;
+			ResponseEntity<ManufacturerList[]> response3 = restTempManu.getForEntity(resourceUrl3, ManufacturerList[].class);
+			List<ManufacturerList> manufacturerList = new ArrayList<ManufacturerList>();
+			
+			for(int i=0;i< response3.getBody().length; i++) 
+			{
+				manufacturerList.add(response3.getBody()[i]);
+			}
+			
+			model.addObject("manu", manufacturerList);
+			
+			if (manufacturer != null) {
+				resourceUrl += "&manufacturer=" + manufacturer;
 			}
 		}
 		
@@ -81,10 +97,12 @@ public class AdminController {
 		RestTemplate restTempCat = new RestTemplate();
 		String resourceUrl2 = "http://localhost:8080/admin/products-management/view-category";
 		ResponseEntity<CategoryList[]> response2 = restTempCat.getForEntity(resourceUrl2, CategoryList[].class);
-		List<CategoryList> CategoryList = new ArrayList<CategoryList>();
+		List<CategoryList> categoryList = new ArrayList<CategoryList>();
+		
+		
 		for(int i=0;i< response2.getBody().length; i++) 
 		{
-			CategoryList.add(response2.getBody()[i]);
+			categoryList.add(response2.getBody()[i]);
 		}
 //		
 //		if (category != null) {
@@ -93,7 +111,8 @@ public class AdminController {
 //		}
 		
 		model.addObject("ProductList", proList);
-		model.addObject("cats", CategoryList);
+		model.addObject("cats", categoryList);
+		
 		model.setViewName("ProductView");
 		return model;
 	}
