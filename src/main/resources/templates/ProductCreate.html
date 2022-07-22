@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Create Product Page</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/ProductCreate.css}"/>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container-xl">
+      <div class="table-responsive">
+        <div class="table-wrapper">
+          <div class="table-title">
+            <div class="row">
+              <div class="col-sm-5">
+                <h2>Add new <b>Products</b></h2>
+                <a th:href="@{/admin/products-management/view-products}" class="btn btn-success">
+                  <span>Back Admin Page</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="addEmployeeModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Add new product</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true" >  &times; </button>
+                    
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                      <body>
+                        <div class="container-xl">
+                          <div class="table-responsive">
+                            <div class="table-wrapper">                             
+                            </div>
+                            <div id="addEmployeeModal">
+                              <div class="modal-dialog">
+                                <div class="modal-content">                                                                    
+                                    <div class="modal-header">                                      
+                                      
+                                    </div>
+                                        <div class="modal-body">
+                                              <div class="form-group">
+                                                <div th:if="${CategoryList != null && Specification == null}">
+                                                  <span>Choose product category</span>
+                                                  <div>
+                                                    <form th:action="@{/admin/products-management/create-product/step-1}" method="get">
+                                                      <select name="Categorychosen" class="form-control">
+                                                        <div th:each="category :${CategoryList}">
+                                                          <option th:unless="${category.level ==1 && #bools.isTrue(category.isParent) }" 
+                                                          th:value="${category.categoryID}"  
+                                                          th:utext="${category.categoryName}"></option>
+                                                        </div>
+                                                      </select>
+                                                      <br>
+                                                      <span>Specify the number of color variant that this product will have:</span>
+                                                      <input type="number" name="ColorVariantNumber" min="0" max="100" step="1" value="0">
+                                                      <input type="submit" value="Create">
+                                                    </form>
+                                                  </div>
+                                                </div>
+                                            </div>
+
+                                      <div th:if="${ProductInputForm != null}">
+                                        <form th:action="@{/admin/products-management/create-product}" th:object="${ProductInputForm}" method="post" 
+		                                     enctype="multipart/form-data">
+                                       <h3>Product main attributes</h3>
+										<!--Product ID-->
+                                          <div class="form-group">
+                                            <label>Product ID</label> </br>
+                                            <input th:if="${ProductInputForm.productID != null}"
+												 type="text" class="form-control" th:field="*{productID}"
+												 pattern="[A-Z\d]+" required value="*{productID}"> </br>
+
+											<input th:unless="${ProductInputForm.productID != null}" type="text" 
+												 class="form-control" th:field="*{productID}" required >
+											<span th:if="${dupProductID != null}" th:utext="${dupProductID}" class="form-control"
+												 style="color: red;"></span>
+                                          </div>
+
+										<!--Product Name-->
+                                          <div class="form-group">
+                                            <label>Product Name</label> </br>
+                                            <input th:if="${ProductInputForm.productName != null}"
+												 type="text" class="form-control" th:field="*{productName}" 
+												 pattern="[\w\d\s]+" required value="*{productName}"> </br>
+											
+											<input th:unless="${ProductInputForm.productName != null}" 
+												 type="text" class="form-control" th:field="*{productName}" required>
+                                          </div>
+
+										<!--Product Price-->
+                                          <div class="form-group">
+                                            <label>Product Price</label> </br>
+                                            <input th:if="${ProductInputForm.productName != null}"
+												type="number" class="form-control" th:field="*{price}" 
+												pattern="[\d]+" min="50000" max="999000000" step="1000" 
+												required value="*{price}"> </br>
+
+												<input th:unless="${ProductInputForm.productName != null}" 
+												type="number" class="form-control" th:field="*{price}" min="50000" max="999000000" step="1000" required>
+                                          </div>
+
+										  <!--Product ManufacturerID-->
+                                          <div class="form-group">
+                                            <label>Product ManufacturerID</label> </br>
+                                            <select th:field="*{manufacturerID}" class="form-control">
+                                              <div th:each="brand :${ManuList}">
+                                                <option th:value="${brand.manufacturerID}"  
+                                                th:utext="${brand.manufacturerName}"></option> </br>
+                                              </div>
+                                          </select>
+                                          </div>
+
+										  <!--Product Category ID-->
+                                          <div class="form-group">
+                                            <label>Product Category ID</label> </br>
+                                            <input type="number" class="form-control" th:field="*{categoryID}" th:utext="${CategoryName}"
+												required readonly="readonly" value="*{categoryID}"></br>
+                                          </div>
+
+										  <!--Product Warranty-->
+                                          <div class="form-group">
+                                            <label>Product Warranty</label> </br> 
+                                            <input th:if="${ProductInputForm.productWarranty != null}" 
+												type="number" class="form-control" th:field="*{productWarranty}" pattern="[\d]+"
+												required value="*{productWarranty}">
+												
+											<input th:unless="${ProductInputForm.productWarranty != null}" 
+												type="number" class="form-control" th:field="*{productWarranty}" pattern="[\d]+"
+												required>
+                                          </div>
+
+										  <!--Product Image-->
+                                          <div class="form-group">
+                                            <label>Product Image</label> <br>
+                                            <input type="file" th:field="${MultipartField.imageFile}" 
+												required accept="image/png, image/jpeg, image/webp">
+                                            <div id="preview"></div>
+                                          </div>
+
+										  <!--Product Interest Rate-->
+                                          <div class="form-group">
+                                            <label>Product Interest Rate</label> </br> 
+                                            <input th:if="${ProductInputForm.interestRate != null}"
+												type="number" class="form-control" th:field="*{interestRate}" 
+												required min="0" max="20" step="0.01" value="*{interestRate}" pattern="[\d\.]+">
+												
+											<input th:unless="${ProductInputForm.interestRate != null}" 
+												type="number" class="form-control" th:field="*{interestRate}" 
+												required min="0" max="20" step="0.01" value="*{interestRate}" pattern="[\d\.]+">
+                                          </div>
+
+										  <!--Product Exclusive-->
+                                          <div class="form-group">
+                                            <label>Product Exclusive</label>
+											<div th:if="${ProductInputForm.exclusive == null}">
+											<input type="radio" name="CheckExclusive" value="Exclusive" required="required"> Yes
+													<input type="radio" name="CheckExclusive" value="NotExclusive" > No
+											</div>
+
+											<div th:unless="${ProductInputForm.exclusive == null}">
+											<input th:if="${ProductInputForm.exclusive == true}" type="radio" name="CheckExclusive" 
+												value="Exclusive" required="required" checked="checked" id="exclusiveBtn">
+												
+											<input th:unless="${ProductInputForm.exclusive == true}" type="radio" name="CheckExclusive" 
+												value="Exclusive" required="required" id="exclusiveBtn">
+												
+												<label for="exclusiveBtn">Yes</label> 
+												
+											<input th:if="${ProductInputForm.exclusive == false}" type="radio" name="CheckExclusive"
+													value="NotExclusive" checked="checked" id="NotExclusiveBtn">
+													
+											<input th:unless="${ProductInputForm.exclusive == false}" type="radio" name="CheckExclusive" 
+												value="NotExclusive" id="NotExclusiveBtn">
+												
+												<label for="NotExclusiveBtn">No</label>
+												</div>
+                                          </div>
+
+										  <!--Product Accessories Included-->
+                                          <div class="form-group">
+                                            <label>Product Accessories Included</label> 
+                                            <input type="text" class="form-control" th:field="*{accessoriesIncluded}" 
+												required value="*{accessoriesIncluded}" pattern="[\A-Za-z]+">
+                                          </div>
+
+										  <!--Product Enabling-->
+                                          <div class="form-group">
+                                            <label>Product Enabling</label>
+                                            <div th:if="${ProductInputForm.enabled == null}">
+											<input type="radio" name="CheckEnabled" value="Enable" required="required"> Enable
+											<input type="radio" name="CheckEnabled" value="Disable" > Disable
+											</div>
+
+											<div th:unless="${ProductInputForm.enabled == null}">
+											<input th:if="${ProductInputForm.enabled == true}" type="radio" name="CheckEnabled" 
+												value="Enable" required="required" checked="checked" id="enableBtn">
+													
+											<input th:unless="${ProductInputForm.enabled == true}" type="radio" name="CheckEnabled" 
+												value="Enable" required="required" id="enableBtn">
+												
+											<label for="enableBtn">Enable</label> 
+												
+											<input th:if="${ProductInputForm.enabled == false}" type="radio" name="CheckEnabled" 
+												value="Disable" checked="checked" id="disableBtn">
+													
+											<input th:unless="${ProductInputForm.enabled == false}" type="radio" name="CheckEnabled" 
+												value="Disable" id="disableBtn">
+												
+											<label for="disableBtn">Disable</label>
+											</div>
+										</div>
+                                          
+                                      
+                                       <h3>Product Article</h3>
+
+									   <!--Article URL-->
+                                          <div class="form-group">
+                                            <label>Article URL</label> 
+                                            <div th:if="${ProductInputForm.article != null}">
+												<input type="hidden" class="form-control" th:field="*{article.articleID}" 
+													value="*{article.articleID)">
+												
+												<input type="hidden" class="form-control" th:field="*{article.productID}" 
+													value="*{article.productID)">
+											
+												<input type="text" class="form-control" th:field="*{article.articleUrl}" 
+													value="*{article.articleUrl}" pattern="[\A-Za-z]+">
+											</div>
+
+												<input th:unless="${ProductInputForm.article != null}" type="text" class="form-control"
+													th:field="*{article.articleUrl}" pattern="[\A-Za-z]+">
+                                          </div>
+
+                                       <h3>Product Camerashot</h3>
+										  <!--Camerashot Images-->
+                                          <div class="form-group">
+                                            <label>Camerashot Images</label>
+                                            	<input type="file" th:field="${MultipartField.cameraShotsFile}" multiple="multiple" 
+													accept="image/png, image/jpeg, image/webp">
+                                          </div>
+
+
+
+                                       <h3>Product Discount</h3>
+										<div class="form-group">
+									   	<div th:if="${ProductInputForm.discount != null}" >
+											<input type="hidden" th:field="*{discount.productID}" value="*{discount.productID}">
+											<input type="hidden" th:field="*{discount.startDate}" value="*{discount.startDate}">
+											<input type="hidden" th:field="*{discount.discountID}" value="*{discount.discountID}">
+										</div>
+										</div>	
+
+										<!--Discounted Price-->
+                                        <div class="form-group">
+                                            <label>Discounted Price</label> 
+                                            <input th:if="${ProductInputForm.discount != null}" 
+												type="number" class="form-control" pattern="[\d\.]+"
+												th:field="*{discount.discountedPrice}" min="50000" max="10000000" step="1000" value="*{discount.discountedPrice}">
+				
+											<input th:unless="${ProductInputForm.discount != null}" 
+												type="number" class="form-control" pattern="[\d\.]+"
+												th:field="*{discount.discountedPrice}" min="50000" max="10000000" step="1000">
+                                        </div>
+										
+										<!--Discount Percent-->
+                                          <div class="form-group">
+                                            <label>Discount Percent</label>  
+                                            <input th:if="${ProductInputForm.discount != null}"
+												type="number" pattern="[\d\%]+" class="form-control"
+												th:field="*{discount.discountPercent}" min="0" max="60" step="1" value="*{discount.discountPercent}">
+											
+											<input th:unless="${ProductInputForm.discount != null}" 
+												type="number" pattern="[\d\%]+" class="form-control"
+												th:field="*{discount.discountPercent}" min="0" max="60" step="1">
+                                          </div>
+
+										  <span th:if="${StartEqualsEnd != null}" th:utext="${StartEqualsEnd}" style="color: red;"></span>
+										  <span th:if="${StartAfterEnd != null}" th:utext="${StartAfterEnd}" style="color: red;"></span>
+
+										  <!--Discount Start Date-->
+										  <div class="form-group">
+                                            <label>Discount Start Date</label>
+                                            <input th:if="${ProductInputForm.discount != null}" type="datetime-local" class="form-control"
+												th:field="*{discount.startDateInput}" value="*{discount.startDateInput}" 
+												th:attr="min=${MinDateTime},
+												max=${MaxDateTime}">
+											
+											<input th:unless="${ProductInputForm.discount != null}" type="datetime-local" class="form-control"
+												th:field="*{discount.startDateInput}" 
+												th:attr="min=${MinDateTime},
+												max=${MaxDateTime}">
+                                          </div>
+
+										  <!--Discount End Date-->
+                                          <div class="form-group">
+                                            <label>Discount End Date</label>
+                                            <input th:if="${ProductInputForm.discount != null}" type="datetime-local" class="form-control"
+												th:field="*{discount.endDateInput}" value="*{discount.endDateInput}" 
+												th:attr="min=${MinDateTime},
+												max=${MaxDateTime}">
+											
+											<input th:unless="${ProductInputForm.discount != null}" type="datetime-local" class="form-control"
+												th:field="*{discount.endDateInput}" 
+												th:attr="min=${MinDateTime},
+												max=${MaxDateTime}">
+                                          </div>
+
+										  <!--Discount Enabling-->
+                                          <div class="form-group">
+                                            <label>Discount Enabling</label>
+                                            <div th:if="${ProductInputForm.discount.enabled != null}">
+											<input th:if="${ProductInputForm.discount.enabled == true}" type="radio" name="DiscountEnabled" 
+												value="Enable" required="required" checked="checked" id="discountEnableButton">
+												
+											<input th:unless="${ProductInputForm.discount.enabled == true}" type="radio" name="DiscountEnabled"
+											 value="Enable" required="required" id="discountEnableButton">
+											 
+											<label for="discountEnableButton">Enable</label> 
+											
+											<input th:if="${ProductInputForm.discount.enabled == false}" type="radio" name="DiscountEnabled" 
+												value="Disable" checked="checked" id="discountDisableButton">
+												
+											<input th:unless="${ProductInputForm.discount.enabled == false}" type="radio" name="DiscountEnabled" 
+												value="Disable" id="discountDisableButton">
+											
+											<label for="discountDisableButton">Disable</label>
+										</div>
+										<div th:if="${ProductInputForm.discount.enabled == null}">
+											<input type="radio" name="DiscountEnabled" value="Enable" > Enable
+												<input type="radio" name="DiscountEnabled" value="Disable" > Disable
+										</div>
+									</div>
+
+
+                                      <div th:if="${ProductInputForm.colorVariantInputList != null}">
+
+                                        <h3>Product Color Variants</h3> 
+										<span th:if="${dupColor != null}" th:utext="${dupColor}" style="color: red;"></span>
+                                        
+										<!--Product color variant-->
+										<div class="form-group" th:each="colorVar, state : ${ProductInputForm.colorVariantInputList}">
+                                        <label>Product color variant</label>
+										<select th:field="*{colorVariantInputList[__${state.index}__].ColorID}" class="form-control">
+											<div th:each="color :${ColorList}">
+												<option th:value="${color.colorID}"  
+												th:utext="${color.colorName}"></option>
+											</div>
+										</select>
+                                        
+										<!--Color Variant Gallery Path-->
+                                        <div class="form-group">
+                                          <label>Color Variant Gallery Path</label>
+                                          <input type="file" th:field="*{colorVariantInputList[__${state.index}__].FileDatas}" multiple="multiple" class="btn"
+										  		accept="image/png, image/jpeg, image/webp">
+                                        </div>
+                                        </div>
+                                      </div>
+
+
+                                       <h3>Product Feature</h3>
+									   <!--Feature Images-->
+                                          <div class="form-group">
+                                            <label>Feature Images</label> <br>
+                                            <input type="file" th:field="${MultipartField.featureFile}" multiple="multiple" class="btn" 
+												accept="image/png, image/jpeg, image/webp">
+                                          </div>
+
+                                       <h3>Product Unboxing Review</h3>
+									   <!--Unboxing Review Images-->
+                                          <div class="form-group">
+                                            <label>Unboxing Review Images</label> <br>
+                                            <input type="file" th:field="${MultipartField.unboxingFile}" multiple="multiple" class="btn"
+												accept="image/png, image/jpeg, image/webp">
+                                          </div>
+
+                                       <h3>Product Variant</h3>
+									   	  <div th:if="${ProductInputForm.variant != null}">
+											<input type="hidden" th:field="*{variant.productVariantID}" th:value="*{variant.productVariantID}">
+										  </div>
+
+										  <!--Original Product ID-->
+                                          <div class="form-group">
+                                            <label>Original product ID</label> 
+											<input th:if="${ProductInputForm.variant != null}" 
+												type="text" class="form-control" th:field="*{variant.productOriginalIdentifier}" 
+												value="*{variant.productOriginalIdentifier}" pattern="[\A-Za-z]+">
+
+											<input th:unless="${ProductInputForm.variant != null}" 
+												type="text" class="form-control" 
+												th:field="*{variant.productOriginalIdentifier}" pattern="[\A-Za-z]+">
+											
+											<span th:if="${selfReferProductID != null}" 
+												th:utext="${selfReferProductID}" style="color: red;"></span>
+											
+											<span th:if="${notKnownProductID != null}" 
+												th:utext="${notKnownProductID}" style="color: red;"></span>
+                                          </div>
+
+										  <!--Product Variant Name-->
+                                          <div class="form-group">
+                                            <label>Product Variant Name</label> 
+											<input th:if="${ProductInputForm.variant != null}" pattern="[\A-Za-z]+"
+												type="text" class="form-control" th:field="*{variant.productVariantName}"
+												value="*{variant.productVariantName}">
+											
+											<input th:unless="${ProductInputForm.variant != null}" pattern="[\A-Za-z]+"
+											 type="text" class="form-control" 
+											 th:field="*{variant.productVariantName}">
+                                          </div>
+
+										  <!--Product Specifications-->
+										  <div class="form-group">
+											<label>Product Specifications</label>
+											<span th:if="${over5AttrEmpty != null}" th:utext="${over5AttrEmpty}" style="color: red;"></span>
+
+											<div th:each="sect ,state : ${ProductInputForm.specList}">
+												<input th:field="*{specList[__${state.index}__].Section}" class="form-control"
+													readonly="readonly" value="sect.section"></input>
+
+											<div th:each="attr, stat : ${sect.attributes}">
+												<input th:field="*{specList[__${state.index}__].attributes[__${stat.index}__].Key}" class="form-control"
+													readonly="readonly" value="attr.key"></input>
+											
+												<input th:field="*{specList[__${state.index}__].attributes[__${stat.index}__].Value}" class="form-control"
+													placeholder="Split multiple values with ;"></input>
+											</div>
+											</div>
+										  </div>
+
+
+
+                                          <div class="modal-footer">
+                                          <input type="submit" class="btn btn-success" value="Create">
+                                       </div>
+                                      </form>
+                                    </div>                              
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </body>
+                    </html>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
