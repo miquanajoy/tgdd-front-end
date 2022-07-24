@@ -9,6 +9,7 @@ import javax.xml.transform.Source;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -19,6 +20,7 @@ import org.springframework.http.converter.support.AllEncompassingFormHttpMessage
 import org.springframework.http.converter.xml.SourceHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -28,12 +30,11 @@ public class HtmlMessageConverterConfig {
 	@Bean
 	public RestTemplate restTemplate() {
 	   final RestTemplate restTemplate = new RestTemplate();
-
 	   List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
-	   ObjectMapper mapper = new ObjectMapper();
-	   mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+	   //ObjectMapper mapper = new ObjectMapper();
+	   //mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 	   MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-	   converter.setObjectMapper(mapper);
+	   //converter.setObjectMapper(mapper);
 	   converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
 	   ResourceHttpMessageConverter converter1  = new ResourceHttpMessageConverter();
 	   converter1.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));

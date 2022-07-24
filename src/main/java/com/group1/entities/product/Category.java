@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.Set;
 //fixed
 
-public class Category implements Serializable{
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+public class Category{
 
 	private Integer categoryID;
 	

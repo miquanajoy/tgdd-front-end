@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
-public class Manufacturer implements Serializable{
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+public class Manufacturer{
 
 	private Integer manufacturerID;
 	
@@ -93,8 +96,8 @@ public class Manufacturer implements Serializable{
 
 	@Override
 	public String toString() {
-		return "manufacturerID=" + manufacturerID + "\n       manufacturerName=" + manufacturerName + "\n       icon="
-				+ Arrays.toString(icon) + "\n       categoryID=" + categoryID + "\n       enabled=" + enabled;
+		return "manufacturerID=" + manufacturerID + "\n       manufacturerName=" + manufacturerName 
+				+ "\n       categoryID=" + categoryID + "\n       enabled=" + enabled;
 	}
 
 }

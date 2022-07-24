@@ -12,7 +12,7 @@ import com.group1.dto.ColorVariantUpdateDTO;
 import com.group1.dto.SpecSection;
 import com.group1.entities.shopping.BillDetail;
 
-public class Product implements Serializable{
+public class Product{
 
 	private String productID;
 	

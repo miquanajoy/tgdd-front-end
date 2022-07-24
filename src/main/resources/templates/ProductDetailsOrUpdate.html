@@ -72,7 +72,7 @@
                       method="get">
                         <span>Specify the number of additional color variant that this product will have:</span>
                         <br>
-                        <input type="number" name="AdditionalColorVarNum" min="0" max="100" step="1" value="0" class="form-control" pattern="[\d]+">
+                        <input type="number" name="AdditionalColorVarNum" min="0" max="100" step="1" value="0" class="form-control">
                         <input type="submit" value="Next" class="btn btn-success">
                       </form>
                     </div>
@@ -89,29 +89,28 @@
                               <div class="form-group">
                                 <label>Product ID</label>
                                 <input type="text" class="form-control" th:field="*{productID}" 
-                                      required value="*{productID}" readonly="readonly">                                   
+                                value="*{productID}" readonly="readonly">                                   
                               </div>
 
                               <!--Product Name-->
                               <div class="form-group">
                                     <label>Product Name</label> 
                                     <input type="text" class="form-control" th:field="*{productName}" 
-                                      required value="*{productName}" pattern="[\w\d]+">
+                                      required value="*{productName}">
                               </div>
 
                               <!--Product Price-->
                               <div class="form-group">
                                 <label>Product Price</label>  
                                 <input type="number" class="form-control" th:field="*{price}" 
-                                      required value="*{price}" min="50000" max="999000000" step="1000" pattern="[\d]+">
+                                      required value="*{price}" min="50000" max="999000000" step="1000">
                               </div>
 
                               <!--Product Manufacturer-->
                               <div class="form-group">
                                 <label>Product Manufacturer</label>
-                                <input type="text" class="form-control"   
-                                      th:field="*{manufacturerID}" value="*{manufacturer.manufacturerName}" 
-					                            required readonly="readonly"></input> 
+                                <input type="text" class="form-control" 
+                                th:field="*{manufacturerID}" value="*{manufacturer.manufacturerName}" readonly="readonly"></input> 
                               </div>
                               
                               <!--Product CategoryID-->
@@ -123,7 +122,8 @@
                               <!--Product Warranty-->
                               <div class="form-group">
                                 <label>Product Warranty</label>
-                                <input type="number" class="form-control" th:field="*{productWarranty}" pattern="[\d]+" value="*{productWarranty}" required >
+                                <input type="number" class="form-control" th:field="*{productWarranty}" 
+                                value="*{productWarranty}" required >
                               </div>
 
                               <!--Product Image-->
@@ -138,8 +138,8 @@
                               <!--Product Interest Rate-->
                               <div class="form-group">
                                 <label>Product Interest Rate</label> 
-                                <input type="number" class="form-control" th:field="*{interestRate}" pattern="[\d\.]+" required value="*{interestRate}"
-				                              min="0" max="20" step="0.01">
+                                <input type="number" class="form-control" th:field="*{interestRate}" 
+                                required value="*{interestRate}" min="0" max="20" step="0.01">
                               </div>
 
                               <!--Product Exclusive-->
@@ -225,7 +225,7 @@
                                 <input th:if="${ProductUpdateForm.discount.discountedPrice == null}" type="number" class="form-control" 
                                       th:field="*{discount.discountedPrice}" min="50000" max="10000000" step="1000">
                                 
-                                <input th:if="${ProductUpdateForm.discount.discountedPrice != null}" type="number" class="form-control"
+                                <input th:if="${ProductUpdateForm.discount.discountedPrice != null}" required type="number" class="form-control"
                                       th:field="*{discount.discountedPrice}" min="50000" max="10000000" step="1000" value="*{discount.discountedPrice}">
                               </div>
 
@@ -235,7 +235,7 @@
                                 <input th:if="${ProductUpdateForm.discount.discountPercent == null}" type="number" class="form-control"
                                       th:field="*{discount.discountPercent}" min="0" max="60" step="1">
                                 
-                                <input th:if="${ProductUpdateForm.discount.discountPercent != null}" type="number" 
+                                <input th:if="${ProductUpdateForm.discount.discountPercent != null}" required type="number" 
                                       th:field="*{discount.discountPercent}" min="0" max="60" step="1" class="form-control"
                                       value="*{discount.discountPercent}">
                                 
@@ -246,8 +246,7 @@
                                 <label>Discount Start Date</label>
                                 <input th:if="${ProductUpdateForm.discount.startDateInput != null}" type="datetime-local" 
                                 th:field="*{discount.startDateInput}" value="*{discount.startDateInput}" class="form-control"
-                                th:attr="min=${MinDateTime},
-                                max=${MaxDateTime}">
+                                th:attr="min=${MinDateTime},max=${MaxDateTime}" required>
                                                                 
                                 <input th:unless="${ProductUpdateForm.discount.startDateInput != null}" type="datetime-local" 
                                 th:field="*{discount.startDateInput}" class="form-control" 
@@ -272,10 +271,10 @@
                                 <label>Discount Enabling</label>
                                 <div th:if="${ProductUpdateForm.discount != null}">
                                 <input th:if="${ProductUpdateForm.discount.enabled == true}" type="radio" name="CheckDiscountEnable" 
-                                      value="Enable" checked="checked" id="discountEnableButton">
+                                      value="Enable" checked="checked" id="discountEnableButton" required>
                                   
                                 <input th:unless="${ProductUpdateForm.discount.enabled == true}" type="radio" name="CheckDiscountEnable"
-                                      value="Enable" id="discountEnableButton">
+                                      value="Enable" id="discountEnableButton" required>
                                   
                                 <label for="discountEnableButton">Enable</label> 
                                   
