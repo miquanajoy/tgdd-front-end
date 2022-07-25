@@ -33,23 +33,33 @@
                             <h2>Products <b>Management</b></h2>
                         </div>
                         <div class="col-sm-7">
+                            <form class="form-inline">
+                                <input type="hidden" name="category" th:if="${param.category != null}"
+                                    th:value="${param.category}" />
+                                <input type="hidden" name="manufacturer" th:if="${param.manufacturer != null}"
+                                    th:value="${param.manufacturer}" />
+                                <input class="form-control" type="name" name="name" placeholder="Tìm nhanh lên..."
+                                    th:value="${param.name}" />
+
+                            </form>
+
                             <!--  <a href="LogoutController" class="btn btn-secondary"><span>Logout</span></a>	 -->
                             <a th:href="@{/admin/products-management/create-product/choose-category}"
                                 class="btn btn-success"><i class="material-icons">&#xE147;</i> <span>Add New
                                     Product</span></a>
-                            <ul>
-                                <li th:each="category: ${cats}" class="nav-item" style="display: inline;">
+                            <ul class="list-group list-group-horizontal">
+                                <li th:each="category: ${cats}" class="list-group-item">
                                     <a th:href="@{/admin/products-management/view-products(category=${category.categoryID})}"
                                         th:utext="${category.categoryName}"></a>
                                 </li>
                             </ul>
-                            <ul>
-                                <li th:each="manufacturer: ${manu}" class="nav-item" style="display: inline;">
+                            <ul class="list-group list-group-horizontal">
+                                <li th:each="manufacturer: ${manu}" class="list-group-item list-group-item-danger">
                                     <!-- <a th:href="@{'/admin/products-management/view-products?category=' + ${param.category} + 
                                                                 '&manufacturer=' + ${manufacturer.manufacturerID}}"
                                         th:utext="${manufacturer.manufacturerName}"></a> -->
 
-                                        <a th:href="@{/admin/products-management/view-products(category=${param.category},manufacturer=${manufacturer.manufacturerID})}"
+                                    <a th:href="@{/admin/products-management/view-products(category=${param.category},manufacturer=${manufacturer.manufacturerID})}"
                                         th:utext="${manufacturer.manufacturerName}"></a>
 
                                 </li>

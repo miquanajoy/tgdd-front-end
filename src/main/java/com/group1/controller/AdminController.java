@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.group1.dto.CategoryList;
 import com.group1.dto.ManufacturerList;
@@ -59,13 +61,18 @@ public class AdminController {
 	@GetMapping("/products-management/view-products")
 	public ModelAndView showAllProducts (ModelAndView model, 
 			@RequestParam(required = false) Integer category, 
-			@RequestParam(required = false) Integer manufacturer) 
+			@RequestParam(required = false) Integer manufacturer,
+			@RequestParam(required = false) String name) 
 	{
 		RestTemplate resttemp = new RestTemplate();
-		String resourceUrl = "http://localhost:8080/admin/products-management/view-products";
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder
+				.fromHttpUrl("http://localhost:8080")
+				.path("/admin/products-management/view-products");
+
+		
 		
 		if (category != null) {
-			resourceUrl +="?category=" +category;
+			uriBuilder = uriBuilder.query("category=" + category);
 			
 			RestTemplate restTempManu = new RestTemplate();
 			String resourceUrl3 = "http://localhost:8080/admin/products-management/view-manufacturer?categoryId=" +category;
@@ -80,12 +87,16 @@ public class AdminController {
 			model.addObject("manu", manufacturerList);
 			
 			if (manufacturer != null) {
-				resourceUrl += "&manufacturer=" + manufacturer;
+				uriBuilder = uriBuilder.query("manufacturer=" + manufacturer);
 			}
 		}
 		
-		System.out.print(resourceUrl);
-		ResponseEntity<ProductList[]> response = resttemp.getForEntity(resourceUrl, ProductList[].class);
+		if (name != null) {
+			uriBuilder = uriBuilder.query("name=" + name);
+		}
+			
+		System.out.println(uriBuilder.build(""));
+		ResponseEntity<ProductList[]> response = resttemp.getForEntity(uriBuilder.build(""), ProductList[].class);
 		List<ProductList> proList = new ArrayList<ProductList>();
 
 		for(int i=0;i< response.getBody().length; i++) 
@@ -104,11 +115,7 @@ public class AdminController {
 		{
 			categoryList.add(response2.getBody()[i]);
 		}
-//		
-//		if (category != null) {
-//			RestTempplate..category.byteValue()
-//			model.addObject("brandList", brand);
-//		}
+
 		
 		model.addObject("ProductList", proList);
 		model.addObject("cats", categoryList);
