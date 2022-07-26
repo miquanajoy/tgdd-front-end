@@ -15,8 +15,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.group1.entities.user.CustomUserDetail;
+import com.group1.entities.user.CustomUserDetailService;
 //import com.group1.entities.user.;
-
+/*
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -24,10 +25,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	//@Autowired
 	//private DataSource dataSource;
 
-	/*@Bean
+	@Bean
 	public UserDetailsService userDetailsService() {
 		return new CustomUserDetailService();
-	}*/
+	}
 	
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -63,7 +64,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll()
 			.and().logout().logoutSuccessUrl("/").permitAll();
 		http.csrf().disable();
-		http.cors();
 	}
 	
 	@Override
@@ -73,4 +73,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.ignoring()
 		.antMatchers("/resources/**", "/static/**");
 	}
-}
+}*/

@@ -1,25 +1,29 @@
 package com.group1.entities.user;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.group1.controller.AdminController;
 
 //import com.group1.repositories.user.UserRepo;
 //import com.group1.repositories.user.RoleRepo;
+@Service
+public class CustomUserDetailService implements UserDetailsService {
 
-
-
-/*public class CustomUserDetailService implements UserDetailsService {
-
-	@Autowired
-	private UserRepo repo;
+	@Resource
+	AdminController admin;
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = repo.findByUsername(username);
+		User user = admin.checkUser(username);
 		if (user == null) {
 			throw new UsernameNotFoundException("Invalid username");
 		}			
 		return new CustomUserDetail(user);
 	}
-}*/
+}

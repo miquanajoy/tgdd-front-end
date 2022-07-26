@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>[[${ProductDetails.productName}]]</title>
+</head>
+<body>
+    <span th:utext="${ProductDetails.productName}"></span>
+    <br>
+    <span th:utext="'Giá:' + ${#numbers.formatInteger(ProductDetails.price, 0, 'POINT')} + 'đ'"></span>
+    <br>
+    <div th:if="${ProductDetails.original != null}">
+    	<a th:if="${OriginalIdentifier != null}" th:href="@{/view-product-details/{prodID} (prodID=${OriginalIdentifier}) }">
+    		<button th:if="${#strings.equals(ProductDetails.productID, OriginalIdentifier)}" type="submit" value="Original" 
+    		 style="color:DodgerBlue; border: 2px solid DodgerBlue">
+    		</button>
+    		
+    		<button th:unless="${#strings.equals(ProductDetails.productID, OriginalIdentifier)}" type="submit" value="Original">
+    		</button>
+    	</a>
+    	
+    	<a th:unless="${OriginalIdentifier != null}" th:href="@{/view-product-details/{prodID} (prodID=${ProductDetails.productID}) }">
+    		<button type="submit" value="Original" style="color:DodgerBlue; border: 2px solid DodgerBlue">
+    		</button>
+    	</a>
+    	
+    	<div th:each="var : ${ProductDetails.original}">
+    		<a th:href="@{/view-product-details/{prodID} (prodID=${var.productVariantID}) }">
+    			<button th:if="${#strings.equals(ProductDetails.productID, var.productVariantID)}" 
+    			type="submit" th:value="var.productVariantName" style="color:DodgerBlue; border: 2px solid DodgerBlue">
+    			</button>
+    			
+    			<button th:unless="${#strings.equals(ProductDetails.productID, var.productVariantID)}" 
+    			type="submit" th:value="var.productVariantName">
+    			</button>
+    		</a>
+    	</div>
+    </div>
+    <br>
+    <div th:if="${ProductDetails.features != null}">
+    	<span> Điểm nổi bật:</span>
+    	<br>
+    	<img th:each="img : ${ProductDetails.features}" th:src="@{'data:image/;base64,'+${img.toShowImage}}" 
+    	width="50px" height="50px">&nbsp; &nbsp;
+    </div>
+    <br>
+    <div>
+    
+    </div>
+    <br>
+    <div th:if="${ProductDetails.colorVariant != null}">
+        <div th:each="colorVar, state : ${ProductColorList}">
+
+            <!--Product color variant-->
+            <div class="form-group">
+            	<label>Các màu của sản phẩm</label>
+            	<br>
+           		<span th:utext="${colorVar.forColorName}"></span>
+				 <!--Color Variant Gallery Path-->
+                <div class="form-group">
+                <div th:each="var : ${ProductDetails.colorVariant}">
+                <img th:if="${var.colorID == colorVar.forColorID}" 
+                th:src="@{'data:image/;base64,'+${var.toShowImage}}" width="50px" height="50px">
+                </div>
+                </div>
+                </div>
+                </div>
+    </div>
+    <br>
+    <div th:if="${ProductDetails.unboxing != null}">
+    	<span th:utext="${UnboxingName}"> </span>
+    	<br>
+    	<img th:each="image : ${ProductDetails.unboxing}" th:src="@{'data:image/;base64,'+${image.toShowImage}}" 
+    	width="50px" height="50px">&nbsp; &nbsp;
+    </div>
+    <br>
+    <div th:if="${ProductDetails.cameraShots != null}">
+    	<span th:utext="${CameraName}"></span>
+    	<br>
+    	<img th:each="image : ${ProductDetails.cameraShots}" th:src="@{'data:image/;base64,'+${image.toShowImage}}" 
+    	width="50px" height="50px">&nbsp; &nbsp;
+    </div>
+    <br>
+    <div>
+    	<div>
+    		<span>Sản phẩm được bảo hành&nbsp;<b>[[${ProductDetails.productWarranty}]] tháng</b></span>
+    	</div>
+    	<br>
+    	<div>
+    		<span>Bộ sản phẩm bao gồm:&nbsp;[[${ProductDetails.accessoriesIncluded}]]</span>
+    	</div>
+    </div>
+    <br>
+    <div>
+    	<h2>
+    	Thông tin sản phẩm
+    	</h2>
+    	<br>
+    	<span th:utext="${ProductDetails.article.articleUrl}"></span>
+    </div>
+    <br>
+    <div>
+   	<span>Cấu hình [[${ProductDetails.productName}]]</span>
+   	<br>
+    <div th:each="group : ${ProductDetails.specList}">
+    <span th:utext="${group.section}"></span>
+    <br>
+    <br>
+    <div th:each="attri : ${group.attributes}">
+    	<span th:utext="${attri.key}"></span>
+    	<span th:if="${attri.value instanceof T(java.lang.String)}" th:utext="${attri.value}"></span>
+    	<ul th:if="${attri.value instanceof T(java.util.ArrayList) }" th:each="keyVal : ${attri.value}">
+    		<li th:utext="${keyVal}">	
+    		</li>
+    	</ul>
+    </div>
+    <br>
+    </div>
+    </div>
+</body>
+</html>

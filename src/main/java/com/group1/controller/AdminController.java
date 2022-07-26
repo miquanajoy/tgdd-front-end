@@ -33,10 +33,12 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
@@ -116,6 +118,17 @@ public class AdminController {
 	        	 return model; 
 	          
 	  }*/
+	@GetMapping("/authenticate-user")
+	public User checkUser(@RequestBody String userName) 
+	{
+		RestTemplate resttemp = new RestTemplate();
+		String checkUserUrl = "http://localhost:8080/admin/check-user/"+userName;
+		
+		ResponseEntity<User> userResponse = resttemp.getForEntity(checkUserUrl, User.class);
+		User finalUser = userResponse.getBody();
+		
+		return finalUser;
+	}
 	
 	@GetMapping("/products-management/view-products")
 	public ModelAndView showAllProducts (ModelAndView model) 

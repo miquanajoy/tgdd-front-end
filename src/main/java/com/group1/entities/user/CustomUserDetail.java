@@ -1,7 +1,9 @@
 package com.group1.entities.user;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,8 +21,9 @@ public class CustomUserDetail implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRoleId());
-		return Arrays.asList(authority);
+		List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
+		authorities.add( new SimpleGrantedAuthority(user.getRoleId())) ;
+		return authorities;
 	}
 
 	@Override
