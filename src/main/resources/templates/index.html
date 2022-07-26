@@ -1,20 +1,493 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<!-- saved from url=(0041)http://127.0.0.1:5500/TGDD-PAGE/tgdd.html -->
+<html lang="vi-VN">
+  <head>
+   
+    <title>Thegioididong.com - Điện thoại, Laptop, Phụ kiện, Đồng hồ chính hãng</title>
+    
+    <link rel="stylesheet" th:href="@{/img}"/>
+    <link rel="stylesheet" href="./brand.css">
+    <link rel="stylesheet" th:href="@{/css/tgdd.css}"/>
+    <link rel="stylesheet" th:href="@{css/brand.css}">
 
-<head>
-	<meta charset="ISO-8859-1">
-	<title>HomePage</title>
-	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" </head>
+    <style>
+      .main-menu {
+        display: flex;
+        justify-content: center;
+      }
 
-<body>
-	<div class="container text-center">
-		<h1>Welcome Page</h1>
-		<div>
-			<h3><a th:href="@{/admin/products-management/view-products}">Admin view product</h3> <br>
-			<h3><a th:href="@{/admin/promotions-management/view-promotions}">Admin view promote code</h3>
-		</div>
-	</div>
+      .main-menu li {
+        margin-right: 15%;
+      }
+    </style>
+    <meta
+      http-equiv="origin-trial"
+      content="A9wkrvp9y21k30U9lU7MJMjBj4USjLrGwV+Z8zO3J3ZBH139DOnCv3XLK2Ii40S94HG1SZ/Zeg2GSHOD3wlWngYAAAB7eyJvcmlnaW4iOiJodHRwczovL3d3dy5nb29nbGV0YWdtYW5hZ2VyLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjYxMjk5MTk5LCJpc1RoaXJkUGFydHkiOnRydWV9"
+    />
+    
+  </head>
 
-</body>
+  <body>
+    <div class="banner-media" style="background-color: rgb(255, 210, 0)">
+      <div class="media-slider" data-size="1">
+        <div class="item visible" data-background-color="#FFD200" data-order="1">
+          <a
+            aria-label="slide"
+            data-cate="0"
+            data-place="1612"
+            href="http://127.0.0.1:5500/TGDD-PAGE/tgdd.html#">
+            <img src="https://cdn.tgdd.vn/2022/06/banner/1200-44-1200x44-4.png" alt="Big T7" />
+          </a>
+        </div>
+      </div>
+    </div>
+    <header class="header" data-sub="0">
+      <div class="header__top">
+        <div>
+          <a th:href="@{/}" class="header__logo">
+            <i class="iconnewglobal-logo">
+              <img src="https://vi.wikipedia.org/wiki/T%E1%BA%ADp_tin:The_gioi_di_dong_logo.svg" alt="">
+            </i>
+          </a>
 
+            <form class="form-inline header__search">
+              <input type="hidden" name="category" th:if="${param.category != null}"
+                  th:value="${param.category}" />
+              <input type="hidden" name="manufacturer" th:if="${param.manufacturer != null}"
+                  th:value="${param.manufacturer}" />
+              <input class="input-search" type="name" name="name" placeholder="Bạn tìm gì..."
+                  th:value="${param.name}" autocomplete="off" maxlength="100" />
+          
+            <button type="submit">
+              <i class="icon-search"></i>
+            </button>
+            <div id="search-result"></div>
+          </form>
+          <a href="" class="name-order"> Lịch sử đơn hàng </a>
+          <a href="" class="header__cart menu-info">
+            <div class="box-cart">
+              <i class="iconnewglobal-cart"></i>
+              <span class="cart-number"></span>
+            </div>
+            <span>Giỏ hàng</span>
+          </a>
+          <div class="header__listtop">
+            <div class="divitem">
+              <a href="https://www.thegioididong.com/tin-tuc">24h<br />Công nghệ</a>
+            </div>
+            <div class="bordercol"></div>
+            <div class="divitem">
+              <a href="https://www.thegioididong.com/hoi-dap">Hỏi Đáp</a>
+            </div>
+            <div class="bordercol"></div>
+            <div class="divitem">
+              <a href="https://www.thegioididong.com/game-app">Game App</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header__main">
+        <div>
+          <ul class="main-menu">
+            <li th:each="category: ${cats}">
+				  <a th:href="@{/view-products(category=${category.categoryID})}"
+					    >
+            <span th:utext="${category.categoryName}"></span>
+            </a>
+			</li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    
+   
+    <div class="locationbox__popup new-popup hide" id="lc_pop--sugg">
+      <div class="locationbox__popup--cnt locationbox__popup--suggestion new-locale">
+        <div class="flex-block">
+          <i class="icon-location"></i>
+          <p>Hãy chọn <b>địa chỉ cụ thể</b> để chúng tôi cung cấp <b>chính xác</b> giá và khuyến mãi</p>
+        </div>
+        <div class="btn-block">
+          <a href="javascript:;" class="btn-location" onclick="OpenLocation()"><b>Chọn địa chỉ</b></a>
+          <a href="javascript:;" class="btn-location gray" onclick="SkipLocation()"><b>Đóng</b></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="big-banner">
+      <a
+        aria-label="slide"
+        data-cate="0"
+        data-place="1998"
+        ><img
+          width="1920"
+          height="920"
+          src="//cdn.tgdd.vn/2022/07/banner/Banner-Big-Hero-1920x450-5.png"
+          alt="Banner Big Campaign"
+      /></a>
+    </div>
+
+    <!--Manufacture go here-->
+    <section>
+      <div class="lst-quickfilter q-manu">
+              <a th:each="manufacturer: ${manu}" th:href="@{/view-products(category=${param.category},
+                            manufacturer=${manufacturer.manufacturerID})}"
+                  th:utext="${manufacturer.manufacturerName}" class="box-quicklink__item bd-radius quicklink-logo"></a>
+      </div>
+    </section>
+
+
+    <section class="main-container">
+      <!-- Gợi ý hôm nay -->
+      <div class="daily-sg">
+        <strong class="name-box">Gợi ý hôm nay</strong>
+
+        <div class="option-sg">
+          <a href="javascript:;" data-is-recommend-tab="true" class="active">
+            <img
+              data-src="./img/goiy-1.png"
+              class="ls-is-cached lazyloaded"
+              alt="Cho bạn"
+              width="50"
+              height="50"
+              src="//cdn.tgdd.vn/mwgcart/mwgcore/ContentMwg/images/homev2/goiy-1.png"
+            />
+            <span>Cho bạn</span>
+          </a>
+        </div>
+        <div class="block-product relative">
+          <div class="preloader">
+            <div class="loaderweb"></div>
+          </div>
+          <div class="block-product__content" data-is-recommend-tab="true">
+            <ul class="listproduct" data-total="35">
+              <li  th:each="product, stat: ${ProductList}" data-id="250261" data-pos="1" class="item">
+                <a th:href="@{/view-products(id=${product.productID})}" class="main-contain">
+                  <div class="item-img">
+                    <img
+                      th:src="@{'data:image/;base64,'+${product.imageToShow}}"
+                      class="ls-is-cached lazyloaded"
+                      width="207"
+                      height="207"
+                    />
+                  </div>
+                  <h3 th:utext="${product.productName}"></h3>
+                  
+                  <strong class="price">
+                    <div th:utext="${#numbers.formatInteger(product.price, 0, 'POINT')} + 'đ'"></div>
+                    
+                  </strong>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <footer class="footer">
+      <section class="clearfix footer__top">
+        <div class="footer__col">
+          <ul class="f-listmenu">
+            <li>
+              <a
+                rel="nofollow"
+                href="https://www.thegioididong.com/tin-tuc/chuong-trinh-tich-diem-danh-cho-khach-hang-than-thiet-1434806"
+                >Tích điểm Quà tặng VIP</a
+              >
+            </li>
+            <li>
+              <a rel="nofollow" href="http://127.0.0.1:5500/lich-su-mua-hang">Lịch sử mua hàng</a>
+            </li>
+            <li>
+              <a rel="nofollow" href="https://www.thegioididong.com/daily">Cộng tác bán hàng cùng TGDĐ</a>
+            </li>
+            <li>
+              <a rel="nofollow" href="https://www.thegioididong.com/tra-gop">Tìm hiểu về mua trả góp</a>
+            </li>
+            <li><a rel="nofollow" href="https://www.thegioididong.com/bao-hanh">Chính sách bảo hành</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <ul class="f-listmenu">
+            <li>
+              <a rel="nofollow" href="http://mwg.vn/">Giới thiệu công ty (MWG.vn)</a>
+            </li>
+            <li>
+              <a rel="nofollow" href="http://vieclam.thegioididong.com/">Tuyển dụng</a>
+            </li>
+            <li><a rel="nofollow" href="https://www.thegioididong.com/lien-he">Gửi góp ý, khiếu nại</a></li>
+            <li>
+              <a rel="nofollow" href="hhttps://www.thegioididong.com/he-thong-sieu-thi-the-gioi-di-dong"
+                >Tìm siêu thị (3.145 shop)</a
+              >
+            </li>
+            <li>
+              <a rel="nofollow" class="linkversion" href="https://www.thegioididong.com/tra-gop?sclient=mobile"
+                >Xem bản mobile</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="f-listtel">
+            <p class="f-listtel__title">
+              <strong>Tổng đài hỗ trợ</strong>
+              (Miễn phí gọi)
+            </p>
+            <p class="f-listtel__content"><span>Gọi mua:</span> <a href="tel:18001060">1800.1060</a> (7:30 - 22:00)</p>
+            <p class="f-listtel__content"><span>Kỹ thuật:</span> <a href="tel:18001763">1800.1763</a> (7:30 - 22:00)</p>
+            <p class="f-listtel__content">
+              <span>Khiếu nại:</span> <a href="tel:18001062">1800.1062</a> (8:00 - 21:30)
+            </p>
+            <p class="f-listtel__content"><span>Bảo hành:</span> <a href="tel:18001064">1800.1064</a> (8:00 - 21:00)</p>
+          </div>
+        </div>
+        <div class="footer__col">
+          <div class="f-social">
+            <a href="https://www.facebook.com/thegioididongcom" class="link-fb">
+              <i class="icon-facebook"></i>
+              3732.1k Fan
+            </a>
+            <a href="https://www.youtube.com/user/TGDDVideoReviews" class="link-ytb">
+              <i class="icon-youtube"></i>
+              844k Đăng ký
+            </a>
+          </div>
+          <div class="f-certify">
+            <a rel="nofollow" href="http://online.gov.vn/Home/WebDetails/20090" target="_blank">
+              <i class="icon-congthuong"></i>
+            </a>
+            <a rel="nofollow" href="http://127.0.0.1:5500/tos#giai-quyet-khieu-nai" target="_blank">
+              <i class="icon-khieunai"></i>
+            </a>
+            <a
+              rel="nofollow"
+              class="dmca-badge"
+              href="https://www.dmca.com/Protection/Status.aspx?ID=5b62e759-2a0c-4d86-b972-af903bfbc89d&amp;refurl=http://127.0.0.1:5500/TGDD-PAGE/tgdd.html"
+              target="_blank"
+            >
+              <i class="icon-protected"></i>
+            </a>
+            <a
+              class="_ncsc"
+              rel="nofollow"
+              href="https://tinnhiemmang.vn/danh-ba-tin-nhiem/thegioididongcom-1632835473"
+              title="Chung nhan Tin Nhiem Mang"
+              target="_blank"
+            >
+              <img
+                class="lazy ls-is-cached lazyloaded"
+                data-original="https://tinnhiemmang.vn/handle_cert?id=thegioididong.com"
+                data-src="https://tinnhiemmang.vn/handle_cert?id=thegioididong.com"
+                width="150"
+                alt="Chung nhan Tin Nhiem Mang"
+                src="./tgdd_files/handle_cert"
+              />
+            </a>
+          </div>
+          <div class="f-website">
+            <div class="footer__logo">
+              <p class="footer__logo-hd">Website cùng tập đoàn</p>
+              <ul class="footer__logo-list">
+                <li>
+                  <a rel="nofollow" href="https://www.dienmayxanh.com/" target="_blank">
+                    <i class="iconlogo-dienmayxanh"></i>
+                  </a>
+                </li>
+                <li>
+                  <a rel="nofollow" href="https://www.bachhoaxanh.com/" target="_blank">
+                    <i class="iconlogo-bachhoaxanh"></i>
+                  </a>
+                </li>
+                <li>
+                  <a rel="nofollow" href="https://www.topzone.vn/" target="_blank" title="Chuỗi cửa hàng cao cấp Apple">
+                    <i class="iconlogo-topzone"></i>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    rel="nofollow"
+                    href="https://www.dienmayxanh.com/xe-dap"
+                    target="_blank"
+                    title="Chuỗi cửa hàng xe đạp"
+                  >
+                    <i class="iconlogo-cycle"></i>
+                  </a>
+                </li>
+                <li>
+                  <a rel="nofollow" href="https://www.avasport.com/" target="_blank" title="Chuỗi cửa hàng thể thao">
+                    <i class="iconlogo-sport"></i>
+                  </a>
+                </li>
+                <li>
+                  <a rel="nofollow" href="https://www.avakids.com/" target="_blank" title="Chuỗi cửa hàng mẹ và bé">
+                    <i class="iconlogo-kids"></i>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    rel="nofollow"
+                    href="https://www.avafashion.com/"
+                    target="_blank"
+                    title="Chuỗi cửa hàng thời trang"
+                  >
+                    <i class="iconlogo-fashion"></i>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    rel="nofollow"
+                    href="https://www.thegioididong.com/avaji"
+                    target="_blank"
+                    title="Chuỗi cửa hàng trang sức"
+                  >
+                    <i class="iconlogo-ji"></i>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    rel="nofollow"
+                    href="https://www.dichvutantam.com/"
+                    target="_blank"
+                    title="Dịch vụ vệ sinh máy lạnh, sửa chữa điện nước, lắp đặt máy lạnh, máy giặt, tivi"
+                  >
+                    <i class="iconlogo-tantam"></i>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    rel="nofollow"
+                    href="https://www.nhathuocankhang.com/"
+                    target="_blank"
+                    title="Chuỗi nhà thuốc chuẩn GPP"
+                  >
+                    <i class="iconlogo-ankhang"></i>
+                  </a>
+                </li>
+                <li>
+                  <a rel="nofollow" href="https://www.4kfarm.com/" target="_blank" title="Nông trại rau sạch">
+                    <i class="iconlogo-4kfarm"></i>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    rel="nofollow"
+                    href="https://vieclam.thegioididong.com/"
+                    target="_blank"
+                    title="Trang tuyển dụng của tập đoàn Thế Giới Di Động"
+                  >
+                    <i class="iconlogo-vieclam"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="copyright">
+        <section>
+          <p>
+            © 2018. Công ty cổ phần Thế Giới Di Động. GPDKKD: 0303217354 do sở KH &amp; ĐT TP.HCM cấp ngày 02/01/2007.
+            GPMXH: 238/GP-BTTTT do Bộ Thông Tin và Truyền Thông cấp ngày 04/06/2020.<br />
+            Địa chỉ: 128 Trần Quang Khải, P. Tân Định, Q.1, TP.Hồ Chí Minh. Điện thoại: 028 38125960. Email:
+            cskh@thegioididong.com. Chịu trách nhiệm nội dung: Huỳnh Văn Tốt.
+            <a rel="nofollow" href="http://127.0.0.1:5500/thoa-thuan-su-dung-trang-mxh">Xem chính sách sử dụng</a>
+          </p>
+        </section>
+      </div>
+    </footer>
+    
+    <div
+      id="lhc_container_v2"
+      class=""
+      style="
+        border: 0px none !important;
+        padding: 0px !important;
+        margin: 0px !important;
+        z-index: 999999999 !important;
+        overflow: visible !important;
+        min-width: 0px !important;
+        min-height: 0px !important;
+        max-width: none !important;
+        max-height: none !important;
+        width: auto !important;
+        height: auto !important;
+      "
+    >
+      <iframe
+        id="lhc_status_widget_v2"
+        class=""
+        style="
+          box-shadow: none;
+          overflow: visible;
+          inset: auto;
+          min-height: 95px;
+          min-width: 95px;
+          max-height: 95px;
+          max-width: 95px;
+          width: 95px;
+          height: 95px;
+          z-index: 2147483640;
+          border-radius: unset;
+          outline: none !important;
+          visibility: visible !important;
+          resize: none !important;
+          background: none transparent !important;
+          opacity: 1 !important;
+          position: fixed !important;
+          border: 0px !important;
+          padding: 0px !important;
+          margin: 0px !important;
+          transition-property: none !important;
+          transform: none !important;
+          display: none !important;
+          cursor: auto !important;
+          float: none !important;
+        "
+        src="./tgdd_files/saved_resource.html"
+      ></iframe
+      ><iframe
+        id="lhc_widget_v2"
+        class=""
+        style="
+          box-shadow: none;
+          overflow: visible;
+          inset: auto;
+          min-height: 95px;
+          min-width: 95px;
+          max-height: 95px;
+          max-width: 95px;
+          width: 95px;
+          height: 95px;
+          z-index: 2147483640;
+          border-radius: unset;
+          outline: none !important;
+          visibility: visible !important;
+          resize: none !important;
+          background: none transparent !important;
+          opacity: 1 !important;
+          position: fixed !important;
+          border: 0px !important;
+          padding: 0px !important;
+          margin: 0px !important;
+          transition-property: none !important;
+          transform: none !important;
+          display: none !important;
+          cursor: auto !important;
+          float: none !important;
+        "
+        src="./tgdd_files/saved_resource(1).html"
+      ></iframe>
+    </div>
+  </body>
+  <iframe id="__JSBridgeIframe_1.0__" style="display: none" src="./tgdd_files/saved_resource(2).html"></iframe
+  ><iframe
+    id="__JSBridgeIframe_SetResult_1.0__"
+    style="display: none"
+    src="./tgdd_files/saved_resource(3).html"
+  ></iframe
+  ><iframe id="__JSBridgeIframe__" style="display: none" src="./tgdd_files/saved_resource(4).html"></iframe
+  ><iframe id="__JSBridgeIframe_SetResult__" style="display: none" src="./tgdd_files/saved_resource(5).html"></iframe>
 </html>
