@@ -68,14 +68,14 @@
     </div>
     <br>
     <div th:if="${ProductDetails.unboxing != null}">
-    	<span th:utext="${UnboxingName}"> </span>
+    	<span> Hình mở hộp: </span>
     	<br>
     	<img th:each="image : ${ProductDetails.unboxing}" th:src="@{'data:image/;base64,'+${image.toShowImage}}" 
     	width="50px" height="50px">&nbsp; &nbsp;
     </div>
     <br>
     <div th:if="${ProductDetails.cameraShots != null}">
-    	<span th:utext="${CameraName}"></span>
+    	<span> Chụp từ Camera:</span>
     	<br>
     	<img th:each="image : ${ProductDetails.cameraShots}" th:src="@{'data:image/;base64,'+${image.toShowImage}}" 
     	width="50px" height="50px">&nbsp; &nbsp;
@@ -90,6 +90,27 @@
     		<span>Bộ sản phẩm bao gồm:&nbsp;[[${ProductDetails.accessoriesIncluded}]]</span>
     	</div>
     </div>
+    <div>
+    <form th:action="@{/add-product-to-cart}" th:object="${addCartForm}" method="post">
+    	<br>
+    	<br>
+    	<input type="hidden" th:name="productID"  th:value="${ProductDetails.productID}">
+    	<input type="hidden" th:name="productName" th:value="${ProductDetails.productName}">
+    	<input type="hidden" th:name="price" th:value="${ProductDetails.price}">
+    	
+    	<div th:if="${#lists.size(ProductColorList) >= 1}">
+    		<span>Chọn màu:</span>
+    		<div th:each="color : ${ProductColorList}">
+    			<input type="radio" th:field="*{colorID}" th:value="${color.forColorID}" 
+    			th:utext="${color.forColorName}" required="required">
+    		</div>
+    	</div>
+    	<br>
+    	<input type="number" th:name="quantity" th:value="1" min="1" max="100" step="1">
+    	<br>
+    	<input type="submit" value="Đặt mua">
+    </form>
+    </div>
     <br>
     <div>
     	<h2>
@@ -100,22 +121,22 @@
     </div>
     <br>
     <div>
-   	<span>Cấu hình [[${ProductDetails.productName}]]</span>
-   	<br>
-    <div th:each="group : ${ProductDetails.specList}">
-    <span th:utext="${group.section}"></span>
-    <br>
-    <br>
-    <div th:each="attri : ${group.attributes}">
-    	<span th:utext="${attri.key}"></span>
-    	<span th:if="${attri.value instanceof T(java.lang.String)}" th:utext="${attri.value}"></span>
-    	<ul th:if="${attri.value instanceof T(java.util.ArrayList) }" th:each="keyVal : ${attri.value}">
-    		<li th:utext="${keyVal}">	
-    		</li>
-    	</ul>
-    </div>
-    <br>
-    </div>
+   		<span>Cấu hình [[${ProductDetails.productName}]]</span>
+   		<br>
+   	 	<div th:each="group : ${ProductDetails.specList}">
+    		<span th:utext="${group.section}"></span>
+    		<br>
+    		<br>
+    		<div th:each="attri : ${group.attributes}">
+    			<span th:utext="${attri.key}"></span>
+    			<span th:if="${attri.value instanceof T(java.lang.String)}" th:utext="${attri.value}"></span>
+    			<ul th:if="${attri.value instanceof T(java.util.ArrayList) }" th:each="keyVal : ${attri.value}">
+    				<li th:utext="${keyVal}">	
+    				</li>
+    			</ul>
+    		</div>
+    		<br>
+    	</div>
     </div>
 </body>
 </html>

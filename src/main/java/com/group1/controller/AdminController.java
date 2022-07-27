@@ -51,7 +51,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.group1.dto.Attributes;
+import com.group1.dto.CategoryList;
 import com.group1.dto.ColorVariantUpdateDTO;
+import com.group1.dto.ManufacturerList;
 import com.group1.dto.MultiFieldsFilePathDTO;
 import com.group1.dto.SpecSection;
 import com.group1.entities.product.Category;
@@ -170,13 +172,13 @@ public class AdminController {
 		}
 			
 		System.out.println(uriBuilder.build(""));
-		ResponseEntity<ProductList[]> response = resttemp.getForEntity(uriBuilder.build(""), ProductList[].class);
+		/*ResponseEntity<ProductList[]> response = resttemp.getForEntity(uriBuilder.build(""), ProductList[].class);
 		List<ProductList> proList = new ArrayList<ProductList>();
 
 		for(int i=0;i< response.getBody().length; i++) 
 		{
 			proList.add(response.getBody()[i]);
-		}
+		}*/
 		
 		
 		RestTemplate restTempCat = new RestTemplate();
@@ -191,7 +193,7 @@ public class AdminController {
 		}
 
 		
-		model.addObject("ProductList", proList);
+		//model.addObject("ProductList", proList);
 		model.addObject("cats", categoryList);
 		
 		model.setViewName("ProductView");

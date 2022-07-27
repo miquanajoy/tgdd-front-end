@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>View Cart</title>
+</head>
+<body>
+	<div th:if="${CartItem == null}"> 
+		<span> Giỏ hàng không có sản phẩm nào</span>
+	</div>
+	<br>
+	<div th:if="${CartItem != null}">
+		<div th:each="item : ${CartItem}">
+			<div th:each="img : ${ImageAttach}">
+				<img th:if="${#strings.equals(img.forProductID, item.productID) && item.colorID == img.forColorID}" 
+				th:src="@{'data:image/;base64,'+${img.imageToShow}}" width="80px" height="80px">
+			</div>
+			<br>
+			<span th:utext="${item.productName}"></span>
+			<br>
+			<span th:if="${item.colorName != null}" th:utext="'Màu:' + ${item.colorName}"></span>
+			<br>
+			<span th:utext="${#numbers.formatInteger(item.price, 0, 'POINT')} + 'đ'"></span>
+			<br>
+			<span th:utext="'Số lượng:' + ${item.quantity}"></span>
+			<br>
+			<a th:href="@{/delete-product-from-cart/{pID} (pID=${item.productID}, colorID=${item.colorID})}">
+				<button type="submit" >Xóa</button>
+			</a>
+			<br>
+		</div>
+		<br>
+		<span th:utext="'Tổng giá '+ ${TotalItem} + ' sản phẩm:' + ${#numbers.formatInteger(CartItemTotalPrice, 0, 'POINT')} + 'đ'">
+		</span>
+	</div>
+	<br>
+	<br>
+</body>
+</html>

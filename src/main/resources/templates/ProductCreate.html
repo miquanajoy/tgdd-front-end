@@ -106,10 +106,10 @@
                                        <h3>Product main attributes</h3>
 										<!--Product ID-->
                                           <div class="form-group">
-                                            <label>Product ID</label> </br>
+                                            <label>Product ID</label> <br>
                                             <input th:if="${ProductInputForm.productID != null}"
 												 type="text" class="form-control" th:field="*{productID}"
-												 pattern="[A-Z\d]+" required value="*{productID}"> </br>
+												 pattern="[A-Z\d]+" required value="*{productID}"> <br>
 
 											<input th:unless="${ProductInputForm.productID != null}" type="text" 
 												 class="form-control" th:field="*{productID}" required >
@@ -119,10 +119,10 @@
 
 										<!--Product Name-->
                                           <div class="form-group">
-                                            <label>Product Name</label> </br>
+                                            <label>Product Name</label> <br>
                                             <input th:if="${ProductInputForm.productName != null}"
 												 type="text" class="form-control" th:field="*{productName}" 
-												 pattern="[\w\d\s]+" required value="*{productName}"> </br>
+												 pattern="[\w\d\s]+" required value="*{productName}"> <br>
 											
 											<input th:unless="${ProductInputForm.productName != null}" 
 												 type="text" class="form-control" th:field="*{productName}" required>
@@ -130,11 +130,11 @@
 
 										<!--Product Price-->
                                           <div class="form-group">
-                                            <label>Product Price</label> </br>
+                                            <label>Product Price</label> <br>
                                             <input th:if="${ProductInputForm.productName != null}"
 												type="number" class="form-control" th:field="*{price}" 
 												pattern="[\d]+" min="50000" max="999000000" step="1000" 
-												required value="*{price}"> </br>
+												required value="*{price}"> <br>
 
 												<input th:unless="${ProductInputForm.productName != null}" 
 												type="number" class="form-control" th:field="*{price}" min="50000" max="999000000" step="1000" required>
@@ -142,25 +142,25 @@
 
 										  <!--Product ManufacturerID-->
                                           <div class="form-group">
-                                            <label>Product ManufacturerID</label> </br>
+                                            <label>Product ManufacturerID</label> <br>
                                             <select th:field="*{manufacturerID}" class="form-control">
                                               <div th:each="brand :${ManuList}">
                                                 <option th:value="${brand.manufacturerID}"  
-                                                th:utext="${brand.manufacturerName}"></option> </br>
+                                                th:utext="${brand.manufacturerName}"></option> <br>
                                               </div>
                                           </select>
                                           </div>
 
 										  <!--Product Category ID-->
                                           <div class="form-group">
-                                            <label>Product Category ID</label> </br>
+                                            <label>Product Category ID</label> <br>
                                             <input type="number" class="form-control" th:field="*{categoryID}" th:utext="${CategoryName}"
-												required readonly="readonly" value="*{categoryID}"></br>
+												required readonly="readonly" value="*{categoryID}"><br>
                                           </div>
 
 										  <!--Product Warranty-->
                                           <div class="form-group">
-                                            <label>Product Warranty</label> </br> 
+                                            <label>Product Warranty</label> <br> 
                                             <input th:if="${ProductInputForm.productWarranty != null}" 
 												type="number" class="form-control" th:field="*{productWarranty}" pattern="[\d]+"
 												required value="*{productWarranty}">
@@ -180,7 +180,7 @@
 
 										  <!--Product Interest Rate-->
                                           <div class="form-group">
-                                            <label>Product Interest Rate</label> </br> 
+                                            <label>Product Interest Rate</label> <br> 
                                             <input th:if="${ProductInputForm.interestRate != null}"
 												type="number" class="form-control" th:field="*{interestRate}" 
 												required min="0" max="20" step="0.01" value="*{interestRate}" pattern="[\d\.]+">
