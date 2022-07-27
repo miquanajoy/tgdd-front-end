@@ -69,6 +69,10 @@ import com.group1.entities.product.ProductUnboxingReview;
 import com.group1.entities.product.ProductVariant;
 import com.group1.entities.shopping.PromoteCode;
 import com.group1.entities.user.User;
+import com.group1.dto.ManufacturerList;
+import com.group1.dto.CategoryList;
+import com.group1.dto.ProductList;
+
 
 
 

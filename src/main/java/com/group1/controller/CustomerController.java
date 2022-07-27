@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.group1.dto.ColorVariantUpdateDTO;
 import com.group1.dto.CustomerViewProductDetails.ColorVariantDetails;
@@ -26,6 +26,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.group1.dto.CategoryList;
 import com.group1.dto.ManufacturerList;
 import com.group1.dto.ProductList;
+
 
 
 @Controller
