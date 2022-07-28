@@ -24,7 +24,7 @@
 			<br>
 			<span th:utext="'Số lượng:' + ${item.quantity}"></span>
 			<br>
-			<a th:href="@{/delete-product-from-cart/{pID} (pID=${item.productID}, colorID=${item.colorID})}">
+			<a th:href="@{/delete-product-from-cart(pID=${item.productID}, colorID=${item.colorID})}">
 				<button type="submit" >Xóa</button>
 			</a>
 			<br>

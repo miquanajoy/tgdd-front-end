@@ -172,14 +172,8 @@ public class AdminController {
 		}
 			
 		System.out.println(uriBuilder.build(""));
-		/*ResponseEntity<ProductList[]> response = resttemp.getForEntity(uriBuilder.build(""), ProductList[].class);
-		List<ProductList> proList = new ArrayList<ProductList>();
-
-		for(int i=0;i< response.getBody().length; i++) 
-		{
-			proList.add(response.getBody()[i]);
-		}*/
-		
+		ResponseEntity<Product[]> response = resttemp.getForEntity(uriBuilder.build(""), Product[].class);
+		List<Product> proList = Arrays.asList(response.getBody());		
 		
 		RestTemplate restTempCat = new RestTemplate();
 		String resourceUrl2 = "http://localhost:8080/admin/products-management/view-category";
@@ -193,7 +187,7 @@ public class AdminController {
 		}
 
 		
-		//model.addObject("ProductList", proList);
+		model.addObject("ProductList", proList);
 		model.addObject("cats", categoryList);
 		
 		model.setViewName("ProductView");

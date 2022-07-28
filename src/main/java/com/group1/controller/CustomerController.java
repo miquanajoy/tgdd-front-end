@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.WebUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -110,28 +111,18 @@ public class CustomerController {
 	}
 	
 	@GetMapping("/view-cart")
-	public ModelAndView viewProductCart(ModelAndView model, RedirectAttributes redirAttr
-	, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redir) 
+	public ModelAndView viewProductCart(ModelAndView model, HttpServletRequest request, HttpServletResponse response, 
+			@ModelAttribute(name = "CookieNull") String Cookienull, @ModelAttribute("newCookieValue") String newValue) 
 	{
 		RestTemplate resttemp = new RestTemplate();
-		
 		Integer totalPrice = 0;
 		Integer totalItem = 0;
 		List<ProductAddToCartForm> itemsAsList = null;
-		/*Cookie neededCookie = null;
-		Cookie[] requestCookie = request.getCookies(); 
-		for(Cookie cooki: requestCookie) 
+		
+		if(Cookienull.isBlank() && newValue.isBlank()) 
 		{
-			if(cooki.getName().equals("cartItems"));
-			{
-				neededCookie = cooki;
-				break;
-			}
-		}
-		if(neededCookie == null) 
-		{*/
-			//System.out.println("redirect cookie is null");
 			Cookie cartItemCookie = WebUtils.getCookie(request, "cartItems");
+			
 			if(cartItemCookie == null) 
 			{
 				model.addObject("CartItem", itemsAsList);
@@ -198,47 +189,49 @@ public class CustomerController {
 					model.addObject("TotalItem", totalItem);
 				
 			}
-			model.setViewName("ViewCart");
-			return model;
-		//}
-		/*else 
+			
+		}
+		else if(!Cookienull.isBlank() || !newValue.isBlank())
 		{
-			System.out.println("redirect cookie is not null");
-			if(neededCookie.getValue() == null) 
+			if(Cookienull.equals("Null")) 
 			{
-				response.addCookie(neededCookie);
+				Cookie cookie = new Cookie("cartItems", null);
+				cookie.setMaxAge(0);
+				cookie.setHttpOnly(false);
+				cookie.setSecure(false);
+				cookie.setPath("/");
+				response.addCookie(cookie);
 				model.addObject("CartItem", itemsAsList);
 			}
-			String cookieValue = null;
-			try {
-				cookieValue = URLDecoder.decode(neededCookie.getValue(), "UTF-8");
-			} catch (UnsupportedEncodingException e1) {
-				e1.printStackTrace();
-			}
-			itemsAsList = new ArrayList<ProductAddToCartForm>();
-			String [] items = cookieValue.split("-");
-			for(String it: items) 
+			else if(!newValue.isBlank())
 			{
-				if(it.contains(",")) 
+				Cookie cartCookie = WebUtils.getCookie(request, "cartItems");
+				String cookieValue = newValue;
+				
+				itemsAsList = new ArrayList<ProductAddToCartForm>();
+				String [] items = cookieValue.split("-");
+				for(String it: items) 
 				{
-					String[] attr = it.split(",");
-					ProductAddToCartForm el = new ProductAddToCartForm();
-					el.setProductID(attr[0]);
+					if(it.contains(",")) 
+					{
+						String[] attr = it.split(",");
+						ProductAddToCartForm el = new ProductAddToCartForm();
+						el.setProductID(attr[0]);
+						
+						el.setProductName(attr[1]);
 					
-					el.setProductName(attr[1]);
+						if(attr[2].equals("null")) el.setColorID(null);
+						else el.setColorID(Integer.valueOf(attr[2]));
 					
-					if(attr[2].equals("null")) el.setColorID(null);
-					else el.setColorID(Integer.valueOf(attr[2]));
+						if(attr[3].equals("null")) el.setColorName(null);
+						else el.setColorName(attr[3]);
 					
-					if(attr[3].equals("null")) el.setColorName(null);
-					else el.setColorName(attr[3]);
+						el.setQuantity(Integer.valueOf(attr[4]));
 					
-					el.setQuantity(Integer.valueOf(attr[4]));
-					
-					el.setPrice(Integer.valueOf(attr[5]));
-					itemsAsList.add(el);
+						el.setPrice(Integer.valueOf(attr[5]));
+						itemsAsList.add(el);
+					}
 				}
-			}
 				List<CartViewImageAttachment> imageAttach = new ArrayList<CartViewImageAttachment>();
 				for(ProductAddToCartForm item: itemsAsList) 
 				{
@@ -258,21 +251,30 @@ public class CustomerController {
 					totalPrice += item.getPrice() * item.getQuantity();
 					totalItem += item.getQuantity();
 				}
-				
+				try {
+					cookieValue = URLEncoder.encode(newValue, "UTF-8");
+				} catch (UnsupportedEncodingException e1) {
+					e1.printStackTrace();
+				}
+				cartCookie.setValue(cookieValue);
+				response.addCookie(cartCookie);
 				model.addObject("ImageAttach", imageAttach);
 				model.addObject("CartItem", itemsAsList);
 				model.addObject("CartItemTotalPrice", totalPrice);
 				model.addObject("TotalItem", totalItem);
-			
+			}
 		}
-		*/
+		model.setViewName("ViewCart");
+		return model;
 	}
 	
-	/*@GetMapping("/delete-product-from-cart/{pID}")
-	public HttpServletResponse deleteProductFromCart(ModelAndView model, @PathVariable("pID") String productID, 
+	@GetMapping("/delete-product-from-cart")
+	public RedirectView deleteProductFromCart(ModelAndView model, @RequestParam("pID") String productID, 
 			@RequestParam("colorID") Integer cID, HttpServletResponse response, HttpServletRequest request, 
 			RedirectAttributes redir) 
 	{
+		RedirectView redirView = new RedirectView();
+		redirView.setContextRelative(true);
 		Cookie cartItems = WebUtils.getCookie(request, "cartItems");
 		
 		String cookieValue = null;
@@ -303,12 +305,6 @@ public class CustomerController {
 			}
 		}
 		
-		System.out.println("Cart items size before deleting:"+itemsAsList.size());
-		for(ProductAddToCartForm item: itemsAsList) 
-		{
-			System.out.println(item.toString());
-		}
-		
 		for(Iterator<ProductAddToCartForm> t = itemsAsList.iterator(); t.hasNext();) 
 		{
 			ProductAddToCartForm el = t.next();
@@ -320,21 +316,9 @@ public class CustomerController {
 			}
 		}
 		
-		System.out.println("Cart items size after deleting:"+itemsAsList.size());
-		for(ProductAddToCartForm item: itemsAsList) 
-		{
-			System.out.println(item.toString());
-		}
-		
 		if(itemsAsList.size() == 0) 
 		{
-			Cookie cookie = new Cookie("cartItems", null);
-			cookie.setMaxAge(0);
-			cookie.setHttpOnly(false);
-			cookie.setSecure(false);
-			cookie.setPath("/");
-			cartItems = cookie;
-			System.out.println("Item list size 0 and value ="+cartItems.getValue());
+			redir.addFlashAttribute("CookieNull", "Null");
 		}
 		else if(itemsAsList.size() >0) 
 		{
@@ -344,24 +328,11 @@ public class CustomerController {
 				String value = a.toString()+"-";
 				newCookieValue += value;
 			}
-			
-			try {
-				cartItems.setValue(URLEncoder.encode(newCookieValue, "UTF-8") );
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			cartItems.setPath("/");
+			redir.addFlashAttribute("newCookieValue", newCookieValue);
 		}
-		response.addCookie(cartItems);
-		try {
-			response.sendRedirect("http://localhost:8081/view-cart");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return response;
-	}*/
+		redirView.setUrl("view-cart");
+		return redirView;
+	}
 	
 	@GetMapping("/test")
 	public ModelAndView gotoTestPage(ModelAndView model) 
@@ -459,6 +430,7 @@ public class CustomerController {
 				{
 					if(addForm.getProductID().equals(element.getProductID())) 
 					{
+						System.out.println("Found dup without Color ID");
 						element.setQuantity(element.getQuantity() + addForm.getQuantity());
 						foundDup =true;
 						break;
@@ -469,6 +441,7 @@ public class CustomerController {
 					if(addForm.getProductID().equals(element.getProductID()) 
 					&& addForm.getColorID() == element.getColorID() ) 
 					{
+						System.out.println("Found dup with Color ID");
 						element.setQuantity(element.getQuantity() + addForm.getQuantity());
 						foundDup =true;
 						break;
@@ -477,11 +450,12 @@ public class CustomerController {
 			}
 			
 			if(foundDup) 
-			{	String newValue = null;
+			{	String newValue = "";
 				for(ProductAddToCartForm el1: itemsAsList) 
 				{
 					newValue += el1.toString()+"-";
 				}
+				System.out.println("New value is:"+newValue);
 				try {
 					cartItemCookie.setValue(URLEncoder.encode(newValue, "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
