@@ -32,9 +32,10 @@ import com.group1.dto.ProductList;
 @Controller
 public class CustomerController {
 	
-	@GetMapping("/view-product-details/{prodID}")
-	public ModelAndView getAProductDetails(@PathVariable("prodID") String pID, ModelAndView model) 
+	@GetMapping("/view-products/{pID}")
+	public ModelAndView getAProductDetails(@PathVariable String pID, ModelAndView model) 
 	{
+		System.out.println(pID + "=========================================");
 		RestTemplate resttemp = new RestTemplate();
 		String viewProductDetailUrl = "http://localhost:8080/view-details-product/"+pID;
 		
@@ -86,12 +87,25 @@ public class CustomerController {
 				}
 			}
 		}
+		
+		RestTemplate restTempCat = new RestTemplate();
+		String resourceUrl2 = "http://localhost:8080/view-category";
+		ResponseEntity<CategoryList[]> response2 = restTempCat.getForEntity(resourceUrl2, CategoryList[].class);
+		List<CategoryList> categoryList = new ArrayList<CategoryList>();
+		
+		
+		for(int i=0;i< response2.getBody().length; i++) 
+		{
+			categoryList.add(response2.getBody()[i]);
+		}
 		if(finalProduct.getUnboxing() != null)
 		model.addObject("UnboxingName", "Hình mở hộp:");
 		if(finalProduct.getCameraShots()!= null)
 		model.addObject("CameraName", "Chụp từ Camera:");
-		model.setViewName("viewProductDetails");
 		model.addObject("ProductDetails", finalProduct);
+		model.addObject("cats", categoryList);
+		
+		model.setViewName("viewProductDetails");
 		return model;
 	}
 
@@ -99,7 +113,7 @@ public class CustomerController {
 	public String  redirect() {
 		return "redirect:/view-products";
 	}
-	
+//	
 	@GetMapping("/view-products")
 	public ModelAndView showAllProducts (ModelAndView model, 
 			@RequestParam(required = false) Integer category, 

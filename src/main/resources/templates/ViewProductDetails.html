@@ -1,121 +1,718 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>[[${ProductDetails.productName}]]</title>
-</head>
-<body>
-    <span th:utext="${ProductDetails.productName}"></span>
-    <br>
-    <span th:utext="'Giá:' + ${#numbers.formatInteger(ProductDetails.price, 0, 'POINT')} + 'đ'"></span>
-    <br>
-    <div th:if="${ProductDetails.original != null}">
-    	<a th:if="${OriginalIdentifier != null}" th:href="@{/view-product-details/{prodID} (prodID=${OriginalIdentifier}) }">
-    		<button th:if="${#strings.equals(ProductDetails.productID, OriginalIdentifier)}" type="submit" value="Original" 
-    		 style="color:DodgerBlue; border: 2px solid DodgerBlue">
-    		</button>
-    		
-    		<button th:unless="${#strings.equals(ProductDetails.productID, OriginalIdentifier)}" type="submit" value="Original">
-    		</button>
-    	</a>
-    	
-    	<a th:unless="${OriginalIdentifier != null}" th:href="@{/view-product-details/{prodID} (prodID=${ProductDetails.productID}) }">
-    		<button type="submit" value="Original" style="color:DodgerBlue; border: 2px solid DodgerBlue">
-    		</button>
-    	</a>
-    	
-    	<div th:each="var : ${ProductDetails.original}">
-    		<a th:href="@{/view-product-details/{prodID} (prodID=${var.productVariantID}) }">
-    			<button th:if="${#strings.equals(ProductDetails.productID, var.productVariantID)}" 
-    			type="submit" th:value="var.productVariantName" style="color:DodgerBlue; border: 2px solid DodgerBlue">
-    			</button>
-    			
-    			<button th:unless="${#strings.equals(ProductDetails.productID, var.productVariantID)}" 
-    			type="submit" th:value="var.productVariantName">
-    			</button>
-    		</a>
-    	</div>
-    </div>
-    <br>
-    <div th:if="${ProductDetails.features != null}">
-    	<span> Điểm nổi bật:</span>
-    	<br>
-    	<img th:each="img : ${ProductDetails.features}" th:src="@{'data:image/;base64,'+${img.toShowImage}}" 
-    	width="50px" height="50px">&nbsp; &nbsp;
-    </div>
-    <br>
-    <div>
-    
-    </div>
-    <br>
-    <div th:if="${ProductDetails.colorVariant != null}">
-        <div th:each="colorVar, state : ${ProductColorList}">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi-VN">
 
-            <!--Product color variant-->
-            <div class="form-group">
-            	<label>Các màu của sản phẩm</label>
-            	<br>
-           		<span th:utext="${colorVar.forColorName}"></span>
-				 <!--Color Variant Gallery Path-->
-                <div class="form-group">
-                <div th:each="var : ${ProductDetails.colorVariant}">
-                <img th:if="${var.colorID == colorVar.forColorID}" 
-                th:src="@{'data:image/;base64,'+${var.toShowImage}}" width="50px" height="50px">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>[[${ProductDetails.productName}]]</title>
+    <link rel="stylesheet" href="detail.css">
+    <link rel="stylesheet" th:href="@{/css/detail.css}">
+
+    <!--CSS-->
+</head>
+
+<body>
+
+    <div class="header-top-bar">
+        <div class="banner-media">
+            <div class="media-slider" data-size="3">
+                <div class="item" data-background-color="#000000" data-order="1">
+                    <img src="https://cdn.tgdd.vn/2022/06/banner/1200-44-1200x44-4.png" alt="ip">
                 </div>
+            </div>
+            <style>
+                .banner-media {
+                    background-color: #000000;
+                }
+            </style>
+        </div>
+    </div>
+    <header class="header  " data-sub="0">
+        <div class="header__top">
+            <div>
+                <a th:href="@{/}" class="header__logo">
+                    <i class="iconnewglobal-logo">
+                        <img src="https://vi.wikipedia.org/wiki/T%E1%BA%ADp_tin:The_gioi_di_dong_logo.svg" alt="">
+                    </i>
+                </a>
+
+                <!--Search-->
+                <form th:action="@{/view-products}" class="form-inline header__search">
+                    <input type="hidden" name="category" th:if="${param.category != null}"
+                        th:value="${param.category}" />
+                    <input type="hidden" name="manufacturer" th:if="${param.manufacturer != null}"
+                        th:value="${param.manufacturer}" />
+                    <input class="input-search" type="name" name="name" placeholder="Bạn tìm gì..."
+                        th:value="${param.name}" autocomplete="off" maxlength="100" />
+                    <button type="submit">
+                        <i class="icon-search"></i>
+                    </button>
+                    <div id="search-result"></div>
+                </form>
+
+
+                <a href="/cart" class="header__cart menu-info">
+                    <div class="box-cart">
+                        <i class="iconnewglobal-cart"></i>
+                        <span class="cart-number"></span>
+                    </div>
+                    <span>Giỏ hàng</span>
+                </a>
+                <div class="header__listtop">
+                    <div class="divitem">
+                        <a href="/tin-tuc">24h<br>Công nghệ</a>
+                    </div>
+                    <div class="bordercol"></div>
+                    <div class="divitem">
+                        <a href="/hoi-dap">Hỏi Đáp</a>
+                    </div>
+                    <div class="bordercol"></div>
+                    <div class="divitem">
+                        <a href="/game-app">Game App</a>
+                    </div>
                 </div>
+
+
+
+            </div>
+        </div>
+        <div class="header__main">
+            <div>
+                <ul class="main-menu">
+                    <li th:each="category: ${cats}">
+                        <a th:href="@{/view-products(category=${category.categoryID})}">
+                            <span th:utext="${category.categoryName}"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+
+    <section>
+        <h1 th:utext="${ProductDetails.productName}">Tên Điện Thoại</h1>
+        <div class="box_main">
+            <div class="box_left">
+                <div class="box01 ">
+                    <div class="box01__show">
+                        <div class="show-tab loading" data-gallery-id="featured-images-gallery" data-color-id="0">
+                            <div class="detail-slider owl-carousel" th:if="${ProductDetails.features != null}">
+
+                                <a href="javascript:void(0)" class="slider-item "
+                                    data-gallery-id="featured-images-gallery" data-color-id="0" data-picture-id="216977"
+                                    data-video-id="XQMh9vPKTpg" data-index="0" data-time="0">
+                                    <img th:each="img : ${ProductDetails.features}"
+                                        th:src="@{'data:image/;base64,'+${img.toShowImage}}" width="50px"
+                                        height="50px">&nbsp; &nbsp;
+                                    <i class="icondetail-videoop iconvideo"></i>
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="scrolling_inner">
+                        <div class="box01__tab scrolling">
+                            <div id="thumb-featured-images-gallery-0" class="item itemTab active "
+                                data-gallery-id="featured-images-gallery" data-color-id="0" data-is-full-spec="False"
+                                data-color-order-id="0" data-isfeatureimage="True">
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <div class="block-tab">
+                    <div class="bt-overlay"></div>
+                    <ul class="block-tab-top">
+                        <li id="tab-featured-images-gallery-0" class="tab-item active" data-is-360-gallery="False"
+                            data-gallery-id="featured-images-gallery" data-color-id="0"
+                            data-thump-name="&#x110;i&#x1EC3;m n&#x1ED5;i b&#x1EAD;t">
+                            &#x110;i&#x1EC3;m n&#x1ED5;i b&#x1EAD;t
+                        </li>
+                        <li id="tab-color-images-gallery-2" class="tab-item " data-is-360-gallery="False"
+                            data-gallery-id="color-images-gallery" data-color-id="2" data-thump-name="&#x110;&#x1ECF;">
+                            &#x110;&#x1ECF;
+                        </li>
+                        <li id="tab-color-images-gallery-12" class="tab-item " data-is-360-gallery="False"
+                            data-gallery-id="color-images-gallery" data-color-id="12" data-thump-name="Tr&#x1EAF;ng">
+                            Tr&#x1EAF;ng
+                        </li>
+                        <li id="tab-color-images-gallery-11" class="tab-item " data-is-360-gallery="False"
+                            data-gallery-id="color-images-gallery" data-color-id="11" data-thump-name="&#x110;en">
+                            &#x110;en
+                        </li>
+                        <li id="tab-color-images-gallery-7" class="tab-item " data-is-360-gallery="False"
+                            data-gallery-id="color-images-gallery" data-color-id="7" data-thump-name="Xanh l&#xE1;">
+                            Xanh l&#xE1;
+                        </li>
+                        <li id="tab-unbox-gallery-0" class="tab-item " data-is-360-gallery="False"
+                            data-gallery-id="unbox-gallery" data-color-id="0"
+                            data-thump-name="H&#xEC;nh m&#x1EDF; h&#x1ED9;p">
+                            H&#xEC;nh m&#x1EDF; h&#x1ED9;p
+                        </li>
+                        <li id="tab-camera-image-gallery-0" class="tab-item " data-is-360-gallery="False"
+                            data-gallery-id="camera-image-gallery" data-color-id="0"
+                            data-thump-name="Ch&#x1EE5;p t&#x1EEB; camera">
+                            Ch&#x1EE5;p t&#x1EEB; camera
+                        </li>
+                        <li id="tab-360-degree-gallery-0" class="tab-item " data-is-360-gallery="True"
+                            data-gallery-id="360-degree-gallery" data-color-id="0"
+                            data-thump-name="H&#xEC;nh 360 &#x111;&#x1ED9;">
+                            H&#xEC;nh 360 &#x111;&#x1ED9;
+                        </li>
+                        <li id="tab-specification-gallery-0" class="tab-item " data-is-360-gallery="False"
+                            data-gallery-id="specification-gallery" data-color-id="0"
+                            data-thump-name="Th&#xF4;ng s&#x1ED1; k&#x1EF9; thu&#x1EAD;t">
+                            Th&#xF4;ng s&#x1ED1; k&#x1EF9; thu&#x1EAD;t
+                        </li>
+                        <li id="tab-article-gallery-0" class="tab-item " data-is-360-gallery="False"
+                            data-gallery-id="article-gallery" data-color-id="0"
+                            data-thump-name="Th&#xF4;ng tin s&#x1EA3;n ph&#x1EA9;m">
+                            Th&#xF4;ng tin s&#x1EA3;n ph&#x1EA9;m
+                        </li>
+                    </ul>
+                    <div class="btn-closemenu close-tab">Đóng</div>
+                    <div class="block-tab-content">
+                        <div class="content-t active not-load-content" id="tab-content-featured-images-gallery-0">
+                        </div>
+                        <div class="content-t  not-load-content" id="tab-content-color-images-gallery-2">
+                        </div>
+                        <div class="content-t  not-load-content" id="tab-content-color-images-gallery-12">
+                        </div>
+                        <div class="content-t  not-load-content" id="tab-content-color-images-gallery-11">
+                        </div>
+                        <div class="content-t  not-load-content" id="tab-content-color-images-gallery-7">
+                        </div>
+                        <div class="content-t  not-load-content" id="tab-content-unbox-gallery-0">
+                        </div>
+                        <div class="content-t  not-load-content" id="tab-content-camera-image-gallery-0">
+                        </div>
+                        <div class="content-t  not-load-content" id="tab-content-360-degree-gallery-0">
+                        </div>
+                        <div class="content-t  not-load-content" id="tab-content-specification-gallery-0">
+                        </div>
+                        <div class="content-t  not-load-content" id="tab-content-article-gallery-0">
+                        </div>
+                    </div>
                 </div>
-    </div>
-    <br>
-    <div th:if="${ProductDetails.unboxing != null}">
-    	<span th:utext="${UnboxingName}"> </span>
-    	<br>
-    	<img th:each="image : ${ProductDetails.unboxing}" th:src="@{'data:image/;base64,'+${image.toShowImage}}" 
-    	width="50px" height="50px">&nbsp; &nbsp;
-    </div>
-    <br>
-    <div th:if="${ProductDetails.cameraShots != null}">
-    	<span th:utext="${CameraName}"></span>
-    	<br>
-    	<img th:each="image : ${ProductDetails.cameraShots}" th:src="@{'data:image/;base64,'+${image.toShowImage}}" 
-    	width="50px" height="50px">&nbsp; &nbsp;
-    </div>
-    <br>
-    <div>
-    	<div>
-    		<span>Sản phẩm được bảo hành&nbsp;<b>[[${ProductDetails.productWarranty}]] tháng</b></span>
-    	</div>
-    	<br>
-    	<div>
-    		<span>Bộ sản phẩm bao gồm:&nbsp;[[${ProductDetails.accessoriesIncluded}]]</span>
-    	</div>
-    </div>
-    <br>
-    <div>
-    	<h2>
-    	Thông tin sản phẩm
-    	</h2>
-    	<br>
-    	<span th:utext="${ProductDetails.article.articleUrl}"></span>
-    </div>
-    <br>
-    <div>
-   	<span>Cấu hình [[${ProductDetails.productName}]]</span>
-   	<br>
-    <div th:each="group : ${ProductDetails.specList}">
-    <span th:utext="${group.section}"></span>
-    <br>
-    <br>
-    <div th:each="attri : ${group.attributes}">
-    	<span th:utext="${attri.key}"></span>
-    	<span th:if="${attri.value instanceof T(java.lang.String)}" th:utext="${attri.value}"></span>
-    	<ul th:if="${attri.value instanceof T(java.util.ArrayList) }" th:each="keyVal : ${attri.value}">
-    		<li th:utext="${keyVal}">	
-    		</li>
-    	</ul>
-    </div>
-    <br>
-    </div>
-    </div>
+                <div class="popup-overlay">
+                    <div class="popup-overlay__popup-video-gallery">
+                        <div class="close-popup"><i></i></div>
+                        <div id="video-player"></div>
+                    </div>
+                </div>
+                <span style="display: none;" id="show-popup-unbox-gallery" data-is-360-gallery="false" class="read-full"
+                    data-gallery-id="unbox-gallery" data-color-id="0"></span>
+                <span style="display: none;" id="show-popup-360-degree-gallery" data-is-360-gallery="true"
+                    class="read-full" data-gallery-id="360-degree-gallery" data-color-id="0"></span>
+                <span style="display: none;" id="show-popup-specification-gallery" data-is-360-gallery="false"
+                    class="read-full" data-gallery-id="specification-gallery" data-color-id="0"></span>
+                <span style="display: none;" id="show-popup-article-gallery" data-is-360-gallery="false"
+                    data-is-article-gallery="true" class="read-full" data-gallery-id="article-gallery"
+                    data-color-id="0"></span>
+                <div class="popup-video-rating">
+                    <div class="popup-video-rating__content active">
+                        <b class="popup-video-rating__content__title">Video có hữu ích cho việc mua hàng của bạn
+                            không?</b>
+                        <span class="popup-video-rating__content_like-container popup-video-rating__content__action"><i
+                                class="iconvideorating-likeGlr"></i>Hữu ích</span>
+                        <span
+                            class="popup-video-rating__content_dislike-container popup-video-rating__content__action"><i
+                                class="iconvideorating-unlikeGlr"></i>Không hữu ích</span>
+                    </div>
+                    <b class="popup-video-rating__thank-you">Cảm ơn bạn đã đánh giá video</b>
+                </div>
+
+                <div class="manu-info-popup">
+                    <div class="manu-info-popup__content">
+                        <span class="manu-info-popup__content__btn-close"></span>
+                        <p class="manu-info-popup__content__title">
+                            Giới thiệu về hãng
+                            <img width="70" height="30" data-src="//cdn.tgdd.vn/Brand/1/samsungnew-220x48-1.png"
+                                alt="Samsung" class="lazyload" />
+                        </p>
+                        <div class="manu-info-popup__content__desc">
+                            <p>(Hàn Quốc)</p>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="policy_intuitive cate42 scenarioNomal">
+                    <div class="policy">
+                        <ul class="policy__list">
+                            <li>
+                                <div class="iconl">
+                                    <i class="icondetail-doimoi"></i>
+                                </div>
+                                <p>
+                                    Hư gì đổi nấy <b>12 tháng</b> tại 3225 siêu thị toàn quốc (miễn phí tháng đầu) <a
+                                        href="https://www.thegioididong.com/chinh-sach-bao-hanh-san-pham"></a>
+                                </p>
+                            </li>
+                            <li data-field="IsSameBHAndDT">
+                                <div class="iconl">
+                                    <i class="icondetail-baohanh"></i>
+                                </div>
+                                <p>
+                                <p>Sản phẩm được bảo hành <b>[[${ProductDetails.productWarranty}]] tháng</b></p>
+                                </p>
+                            </li>
+
+                            <li>
+                                <div class="iconl"><i class="icondetail-sachhd"></i></div>
+                                <p>Bộ sản phẩm bao gồm:&nbsp;[[${ProductDetails.accessoriesIncluded}]]</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="img-main">
+                    <img class="lazyload"
+                        data-src="//cdn.tgdd.vn/Products/Images/42/235838/Kit/samsung-galaxy-s22-ultra-note.jpg"
+                        alt="&#x110;i&#x1EC7;n tho&#x1EA1;i Samsung Galaxy S22 Ultra 5G 128GB">
+                </div>
+                <!-- <div class="article content-t-wrap">
+                    <div class="article__content short">
+
+                        <h3 class="article__content__title">Thông tin sản phẩm</h3>
+                        <div class="content-article">
+                            <h3 style="text-align: justify;"><a
+                                    href="https://www.thegioididong.com/dtdd/samsung-galaxy-s22-ultra" target="_blank"
+                                    title="Tham khảo điện thoại Samsung Galaxy S22 Ultra 5G kinh doanh tại Thegioididong.com">Galaxy
+                                    S22 Ultra 5G</a> chiếc smartphone cao cấp nhất trong bộ 3 Galaxy S22 series mà <a
+                                    href="https://www.thegioididong.com/samsung" target="_blank"
+                                    title="Tham khảo sản phẩm Samsung kinh doanh tại Thegioididong.com">Samsung</a> đã
+                                cho ra mắt. Tích hợp bút S Pen hoàn hảo trong thân máy, trang bị vi xử lý mạnh mẽ cho
+                                các tác vụ sử dụng vô cùng mượt mà và nổi bật hơn với cụm camera không viền độc đáo mang
+                                đậm dấu ấn riêng.</h3>
+                            <h3 style="text-align: justify;">Sở hữu một diện mạo đầy nổi bật</h3>
+                            <p style="text-align: justify;">Galaxy S22 Ultra 5G được kế thừa form thiết kế từ những dòng
+                                Note trước đây của hãng đem đến cho bạn có cảm giác vừa mới lạ vừa hoài niệm. Trọng
+                                lượng của máy khoảng 228 g cho cảm giác cầm nắm đầm tay, khi cầm máy trần thì hơi có cảm
+                                giác dễ trượt.</p>
+                            <p style="text-align: justify;"><a class="preventdefault"
+                                    href="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-10-2.jpg"
+                                    onclick="return false;"><img alt="Galaxy S22 Ultra 5G - Thiết kế"
+                            
+                                        class='lazyload'
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-10-2.jpg"
+                                        title="Galaxy S22 Ultra 5G - Thiết kế" /></a></p>
+                            <p style="text-align: justify;">Phần mặt lưng <a href="https://www.thegioididong.com/dtdd"
+                                    target="_blank">điện thoại</a> được làm nhám nên hạn chế tốt việc bám dấu vân tay,
+                                có thiết kế cũng khá đơn giản nhưng vẫn toát lên vẻ sang trọng và cao cấp của chiếc máy.
+                                Cụm camera sau trên Galaxy S22 Ultra 5G được thiết kế trần tạo cảm giác gọn gàng và cũng
+                                tạo nên một điểm nhấn độc đáo cho chiếc máy.</p>
+                            <p style="text-align: justify;"><a class="preventdefault"
+                                    href="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-11-2.jpg"
+                                    onclick="return false;"><img alt="Galaxy S22 Ultra 5G - Mặt lưng"
+                                 
+                                        class='lazyload'
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-11-2.jpg"
+                                        title="Galaxy S22 Ultra 5G - Mặt lưng" /></a></p>
+                            <p style="text-align: justify;">Có thể nói Galaxy S22 Ultra 5G chính là chiếc máy đầu tiên
+                                được tích hợp bút S Pen hoàn hảo trong một thân máy của <a
+                                    href="https://www.thegioididong.com/dtdd-samsung-galaxy-s" target="_blank"
+                                    title="Tham khảo một số mẫu điện thoại Samsung Galaxy S đang kinh doanh tại Thế Giới Di Động ">dòng
+                                    Galaxy S</a>. Giờ đây, bạn có thể dễ dàng phác thảo, ghi chú lại những ý tưởng vô
+                                cùng nhanh chóng với độ trễ đã được cải thiện cho cảm giác viết vẽ vô cùng chân thật.
+                            </p>
+                            <p style="text-align: justify;"><a class="preventdefault"
+                                    href="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-7-2.jpg"
+                                    onclick="return false;"><img
+                                        alt="Galaxy S22 Ultra 5G - Thao tác viết bằng bút S Pen"
+                                   
+                                        class='lazyload'
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-7-2.jpg"
+                                        title="Galaxy S22 Ultra 5G - Thao tác viết bằng bút S Pen" /></a></p>
+                            <h3 style="text-align: justify;">Cấu hình mạnh mẽ với Snapdragon 8 Gen 1</h3>
+                            <p style="text-align: justify;">Hiệu năng trên Galaxy S22 Ultra 5G là điều khỏi bàn cãi khi
+                                máy sử dụng chip Snapdragon 8 Gen 1 vô cùng mạnh mẽ với tiến trình sản xuất 4 nm. Khi
+                                máy chơi game cũng chỉ ấm lên một chút ở vị trí cụm camera chứ không hoàn toàn quá nóng
+                                như những sản phẩm khác khi dùng cùng con chip này.</p>
+                            <p style="text-align: justify;">Máy dễ dàng vượt qua được các tựa game Liên Quân, PUBG
+                                Mobile, cài đặt cấu hình tối đa thì biểu đồ FPS trên Galaxy S22 Ultra 5G vẫn khá ổn
+                                định, không bị drop quá nhiều. Kể cả tựa game Genshin Impact ở mức đồ họa mặc định thì
+                                máy chơi vẫn mượt mà, đồ họa hiển thị đẹp mắt.</p>
+                            <p style="text-align: justify;"><a class="preventdefault"
+                                    href="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-1-2.jpg"
+                                    onclick="return false;"><img alt="Galaxy S22 Ultra 5G - Trải nghiệm chơi game"
+                                
+                                        class='lazyload'
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-1-2.jpg"
+                                        title="Galaxy S22 Ultra 5G - Trải nghiệm chơi game" /></a></p>
+                            <p style="text-align: justify;">Còn nói về các tác vụ cơ bản như lướt web, đọc báo, xem
+                                YouTube,... thì máy hoàn thành một cách dễ dàng, sử dụng mượt mà, khả năng đa nhiệm
+                                thoải mái với <a href="https://www.thegioididong.com/dtdd-ram-8gb" target="_blank"
+                                    title="Tham khảo điện thoại có RAM 8 GB kinh doanh tại Thegioididong.com">RAM 8
+                                    GB</a>.</p>
+                            <p style="text-align: justify;"><a class="preventdefault"
+                                    href="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-3-2.jpg"
+                                    onclick="return false;"><img alt="Galaxy S22 Ultra 5G - Trải nghiệm lướt web"
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-3-2.jpg"
+                                        class='lazyload'
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-3-2.jpg"
+                                        title="Galaxy S22 Ultra 5G - Trải nghiệm lướt web" /></a></p>
+                            <h3 style="text-align: justify;">Mang đến những bức ảnh đầy chất lượng</h3>
+                            <div style="text-align: justify;">Máy trang bị 4 camera với camera chính lên đến 108 MP, <a
+                                    href="https://www.thegioididong.com/dtdd-camera-goc-rong" target="_blank"
+                                    title="Tham khảo điện thoại có camera góc rộng tại Thegioididong.com">camera góc
+                                    siêu rộng</a> 12 MP, 2 <a href="https://www.thegioididong.com/dtdd-camera-zoom"
+                                    target="_blank"
+                                    title="Tham khảo điện thoại có camera tele kinh doanh tại Thegioididong.com">camera
+                                    tele</a> 10 MP hỗ trợ thu phóng quang học 10x. Nổi bật nhất là camera chính với khả
+                                năng chụp đêm vô cùng ấn tượng như câu mà hãng đã đưa ra "Nightography Camera - Mắt thần
+                                bóng đêm". Sở hữu cảm biến điểm ảnh lớn nên thu được nhiều ánh sáng hơn, khi chụp đêm
+                                những bức ảnh cực kỳ sáng, hiện tượng nhiễu hạt được cải thiện đáng kể.</div>
+                            <div style="text-align: justify;"><a class="preventdefault"
+                                    href="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-8-2.jpg"
+                                    onclick="return false;"><img alt="Galaxy S22 Ultra 5G - Ảnh chụp trên camera"
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-8-2.jpg"
+                                        class='lazyload'
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-8-2.jpg"
+                                        title="Galaxy S22 Ultra 5G - Ảnh chụp trên camera" /></a></div>
+                            <div style="text-align: justify;">Chế độ zoom 100x hoạt động khá là ổn định, khả năng zoom
+                                xa và bắt nét ảnh nhanh. Tất nhiên khi bạn zoom tới 100x thì ảnh khá mờ, khoảng cách
+                                zoom để cho ra chất lượng ảnh tốt là khoảng 30-40x.</div>
+                            <div style="text-align: justify;"><a class="preventdefault"
+                                    href="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-6-2.jpg"
+                                    onclick="return false;"><img alt="Galaxy S22 Ultra 5G - Chế độ zoom 30x trên máy"
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-6-2.jpg"
+                                        class='lazyload'
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-6-2.jpg"
+                                        title="Galaxy S22 Ultra 5G - Chế độ zoom 30x trên máy" /></a></div>
+                            <div style="text-align: justify;">Chế độ chụp chân dung cũng đã được hãng cải thiện khá
+                                nhiều so với thế hệ trước. Ảnh chụp xóa phông sâu, ít bị lẹm kể cả phần khó như tóc, độ
+                                chi tiết cao, ảnh tươi sáng và màu sắc khá chân thật. Bạn muốn chụp ảnh phong cảnh, khu
+                                phố hay đơn giản là chụp nhóm thì trên Galaxy S22 Ultra 5G hoàn toàn làm được với camera
+                                góc siêu rộng.</div>
+                            <div style="text-align: justify;"><a class="preventdefault"
+                                    href="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-9-2.jpg"
+                                    onclick="return false;"><img alt="Galaxy S22 Ultra 5G - Ảnh chụp trên camera"
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-9-2.jpg"
+                                        class='lazyload'
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-9-2.jpg"
+                                        title="Galaxy S22 Ultra 5G - Ảnh chụp trên camera" /></a></div>
+                            <div>
+                                <div style="text-align: justify;">Galaxy S22 Ultra 5G hỗ trợ quay video 8K tuy nhiên
+                                    không đi kèm chống rung, nếu như bật chế độ Siêu ổn định lên thì độ phân giải sẽ bị
+                                    giới hạn xuống Full HD 60 FPS. Bao nhiêu đó cũng khá đủ rồi, khung hình ổn định, ít
+                                    bị giật, độ chi tiết cao và màu sắc cũng khá chân thật để chúng ta dễ dàng chỉnh
+                                    sửa.</div>
+                                <div style="text-align: justify;">Camera trước lên đến 40 MP cho nên hình sống ảo của
+                                    chúng ta sẽ chân thật hơn bao giờ hết, da vẫn được làm mịn nhẹ nhưng các chi tiết
+                                    trên da đều sẽ được tái tạo rất rõ nét. Màu sắc khá rực rỡ nên không cần áp dụng
+                                    thêm bộ lọc màu nữa.</div>
+                            </div>
+                            <h3 style="text-align: justify;">Trải nghiệm xem nhìn hoàn hảo</h3>
+                            <div style="text-align: justify;">Galaxy S22 Ultra 5G trang bị một màn hình khá xuất sắc với
+                                độ phần 2K+, rộng 6.8 inch cùng với đó là tấm nền <a
+                                    href="https://www.thegioididong.com/hoi-dap/tim-hieu-man-hinh-dynamic-amoled-2x-tren-smartphone-1245213"
+                                    target="_blank"
+                                    title="Tìm hiểu màn hình Dynamic AMOLED 2X tại Thegioididong.com">Dynamic AMOLED
+                                    2X</a> đem đến một màu sắc hiển thị rực rỡ, màu đen sâu cho cảm giác xem nhìn chân
+                                thật. Hỗ trợ tần số quét 120 Hz nên khả năng vuốt chạm mượt mà, nhanh chóng. Màn hình có
+                                độ sáng cao 1750 nits nên việc khi dùng ngoài trời chất lượng hiển thị vẫn rất rõ ràng.
+                            </div>
+                            <div style="text-align: justify;"><a class="preventdefault"
+                                    href="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-5-2.jpg"
+                                    onclick="return false;"><img
+                                        alt="Galaxy S22 Ultra 5G - Màn hình cong tràn sang 2 cạnh"
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-5-2.jpg"
+                                        class='lazyload'
+                                        data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-5-2.jpg"
+                                        title="Galaxy S22 Ultra 5G - Màn hình cong tràn sang 2 cạnh" /></a></div>
+                            <div style="text-align: justify;">Mặt kính cong tràn sang 2 cạnh khá sang trọng và cũng là
+                                đặc trưng của dòng Note, được trang bị kính cường lực Corning Gorilla Glass Victus+ gia
+                                tăng khả năng chống trầy xước rất tốt, cho bạn yên tâm hơn khi sử dụng máy.</div>
+                            <h3 style="text-align: justify;">Thời lượng sử dụng cả ngày với viên pin 5000 mAh</h3>
+                            <div>
+                                <div style="text-align: justify;">Viên pin trên Galaxy S22 Ultra 5G được hỗ trợ là 5000
+                                    mAh tương tự như <a
+                                        href="https://www.thegioididong.com/dtdd/samsung-galaxy-s21-ultra"
+                                        target="_blank"
+                                        title="Tham khảo điện thoại Samsung Galaxy S21 Ultra tại Thegioididong.com">Galaxy
+                                        S21 Ultra 5G</a> nhưng công suất sạc thì đã được nâng lên thành 45 W thay vì 25
+                                    W. Khả năng <a href="https://www.thegioididong.com/dtdd-sac-pin-nhanh"
+                                        target="_blank"
+                                        title="Tham khảo điện thoại có sạc nhanh kinh doanh tại Thegioididong.com">sạc
+                                        nhanh</a> ấn tượng với 30 phút được hơn 50% dung lượng và mất khoảng 1 giờ 10
+                                    phút là đầy.</div>
+                                <div style="text-align: justify;"><a class="preventdefault"
+                                        href="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-12-2.jpg"
+                                        onclick="return false;"><img alt="Galaxy S22 Ultra 5G - Thời gian sạc"
+                                            data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-12-2.jpg"
+                                            class='lazyload'
+                                            data-src="https://cdn.tgdd.vn/Products/Images/42/235838/samsung-galaxy-s22-ultra-12-2.jpg"
+                                            title="Galaxy S22 Ultra 5G - Thời gian sạc" /></a></div>
+                                <div style="text-align: justify;">Vì thế với dung lượng pin cao cùng khả năng sạc nhanh,
+                                    thì Galaxy S22 Ultra 5G hoàn toàn có thể cùng bạn chinh phục các tựa game, những bộ
+                                    phim yêu thích hoặc đáp ứng tốt nhu cầu làm việc cả một ngày dài.</div>
+                                <h3 style="text-align: justify;">Chuyển đổi dữ liệu nhanh chóng và tiện lợi</h3>
+                                <div style="text-align: justify;">Ngoài ra, để trải nghiệm sử dụng của khách hàng được
+                                    liền mạch hơn, Samsung có cung cấp một cách chuyển đổi dữ liệu an toàn, bảo mật với
+                                    tính năng <strong>Smart Witch. </strong>Hỗ trợ người dùng truyền dữ liệu như ảnh,
+                                    video, danh bạ, sự kiện lịch, ghi chú,... từ nhiều thiết bị <strong>kể cả khác hệ
+                                        điều hành</strong> đến Samsung Galaxy S22 Ultra.</div>
+                                <div style="text-align: justify;">Bạn có thể tham khảo chi tiết bài hướng dẫn tại: <a
+                                        href="https://www.thegioididong.com/hoi-dap/huong-dan-chuyen-du-lieu-tu-iphone-sang-dien-thoai-927670"
+                                        target="_blank"
+                                        title="Chuyển dữ liệu sang điện thoại Samsung bằng Smart Switch">Chuyển dữ liệu
+                                        sang điện thoại Samsung bằng Smart Switch.</a></div>
+                                <div style="text-align: justify;">
+                                    <p>Tóm lại, với những ưu điểm như thiết kế sang trọng, camera chụp đêm ấn tượng,
+                                        hiệu năng vượt trội thì Galaxy S22 Ultra 5G hoàn toàn xứng đáng để bạn bỏ tiền
+                                        ra sở hữu em nó để phục vụ nhiều cầu sử dụng của bản thân.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="bg-article"></div>
+                </div> -->
+            </div>
+            <main class="box_right">
+                <div class="scrolling_inner">
+                    <div class="box03 color group desk">
+                        <label>Các màu của sản phẩm</label>
+                        <br>
+
+                        <div th:each="colorVar, state : ${ProductColorList}">
+                            <!-- <span th:utext="${colorVar.forColorName}"></span> -->
+
+                            <a class="box03__item item act" th:each="var : ${ProductDetails.colorVariant}">
+                                <span th:utext="${colorVar.forColorName}"></span>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="box04 box_normal">
+                    <div class="price-one">
+                        <div class="box-price">
+                            <span th:utext="'Giá:' + ${#numbers.formatInteger(ProductDetails.price, 0, 'POINT')} + 'đ'"
+                                class="box-price-present"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="border7"></div>
+
+
+
+
+                <div class="parameter__title" th:utext="'Cấu hình của ' + ${ProductDetails.productName}">
+
+                </div>
+
+                <div class="parameter" th:each="group : ${ProductDetails.specList}">
+                    <span class="lileft" th:utext="${group.section}"></span>
+                    <br>
+                    <br>
+                    <div th:each="attri : ${group.attributes}" class="parameter__list 235838 active liright">
+                        <span class="comma" th:utext="${attri.key}"></span>
+                        <span th:if="${attri.value instanceof T(java.lang.String)}" th:utext="${attri.value}"></span>
+                        <ul th:if="${attri.value instanceof T(java.util.ArrayList) }" th:each="keyVal : ${attri.value}">
+                            <li th:utext="${keyVal}">
+                            </li>
+                        </ul>
+                    </div>
+                    <br>
+                </div>
+
+
+
+
+            </main>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <section class="clearfix footer__top">
+            <div class="footer__col">
+                <ul class="f-listmenu">
+                    <li>
+                        <a rel="nofollow"
+                            href="https://www.thegioididong.com/tin-tuc/chuong-trinh-tich-diem-danh-cho-khach-hang-than-thiet-1434806">Tích
+                            điểm Quà tặng VIP</a>
+                    </li>
+                    <li>
+                        <a rel="nofollow" href="http://127.0.0.1:5500/lich-su-mua-hang">Lịch sử mua hàng</a>
+                    </li>
+                    <li>
+                        <a rel="nofollow" href="https://www.thegioididong.com/daily">Cộng tác bán hàng cùng TGDĐ</a>
+                    </li>
+                    <li>
+                        <a rel="nofollow" href="https://www.thegioididong.com/tra-gop">Tìm hiểu về mua trả góp</a>
+                    </li>
+                    <li><a rel="nofollow" href="https://www.thegioididong.com/bao-hanh">Chính sách bảo hành</a></li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <ul class="f-listmenu">
+                    <li>
+                        <a rel="nofollow" href="http://mwg.vn/">Giới thiệu công ty (MWG.vn)</a>
+                    </li>
+                    <li>
+                        <a rel="nofollow" href="http://vieclam.thegioididong.com/">Tuyển dụng</a>
+                    </li>
+                    <li><a rel="nofollow" href="https://www.thegioididong.com/lien-he">Gửi góp ý, khiếu nại</a></li>
+                    <li>
+                        <a rel="nofollow" href="hhttps://www.thegioididong.com/he-thong-sieu-thi-the-gioi-di-dong">Tìm
+                            siêu thị (3.145 shop)</a>
+                    </li>
+                    <li>
+                        <a rel="nofollow" class="linkversion"
+                            href="https://www.thegioididong.com/tra-gop?sclient=mobile">Xem bản mobile</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <div class="f-listtel">
+                    <p class="f-listtel__title">
+                        <strong>Tổng đài hỗ trợ</strong>
+                        (Miễn phí gọi)
+                    </p>
+                    <p class="f-listtel__content"><span>Gọi mua:</span> <a href="tel:18001060">1800.1060</a> (7:30 -
+                        22:00)</p>
+                    <p class="f-listtel__content"><span>Kỹ thuật:</span> <a href="tel:18001763">1800.1763</a> (7:30 -
+                        22:00)</p>
+                    <p class="f-listtel__content">
+                        <span>Khiếu nại:</span> <a href="tel:18001062">1800.1062</a> (8:00 - 21:30)
+                    </p>
+                    <p class="f-listtel__content"><span>Bảo hành:</span> <a href="tel:18001064">1800.1064</a> (8:00 -
+                        21:00)</p>
+                </div>
+            </div>
+            <div class="footer__col">
+                <div class="f-social">
+                    <a href="https://www.facebook.com/thegioididongcom" class="link-fb">
+                        <i class="icon-facebook"></i>
+                        3732.1k Fan
+                    </a>
+                    <a href="https://www.youtube.com/user/TGDDVideoReviews" class="link-ytb">
+                        <i class="icon-youtube"></i>
+                        844k Đăng ký
+                    </a>
+                </div>
+                <div class="f-certify">
+                    <a rel="nofollow" href="http://online.gov.vn/Home/WebDetails/20090" target="_blank">
+                        <i class="icon-congthuong"></i>
+                    </a>
+                    <a rel="nofollow" href="http://127.0.0.1:5500/tos#giai-quyet-khieu-nai" target="_blank">
+                        <i class="icon-khieunai"></i>
+                    </a>
+                    <a rel="nofollow" class="dmca-badge"
+                        href="https://www.dmca.com/Protection/Status.aspx?ID=5b62e759-2a0c-4d86-b972-af903bfbc89d&amp;refurl=http://127.0.0.1:5500/TGDD-PAGE/tgdd.html"
+                        target="_blank">
+                        <i class="icon-protected"></i>
+                    </a>
+                    <a class="_ncsc" rel="nofollow"
+                        href="https://tinnhiemmang.vn/danh-ba-tin-nhiem/thegioididongcom-1632835473"
+                        title="Chung nhan Tin Nhiem Mang" target="_blank">
+                        <img class="lazy ls-is-cached lazyloaded"
+                            data-original="https://tinnhiemmang.vn/handle_cert?id=thegioididong.com"
+                            data-src="https://tinnhiemmang.vn/handle_cert?id=thegioididong.com" width="150"
+                            alt="Chung nhan Tin Nhiem Mang" src="./tgdd_files/handle_cert" />
+                    </a>
+                </div>
+                <div class="f-website">
+                    <div class="footer__logo">
+                        <p class="footer__logo-hd">Website cùng tập đoàn</p>
+                        <ul class="footer__logo-list">
+                            <li>
+                                <a rel="nofollow" href="https://www.dienmayxanh.com/" target="_blank">
+                                    <i class="iconlogo-dienmayxanh"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://www.bachhoaxanh.com/" target="_blank">
+                                    <i class="iconlogo-bachhoaxanh"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://www.topzone.vn/" target="_blank"
+                                    title="Chuỗi cửa hàng cao cấp Apple">
+                                    <i class="iconlogo-topzone"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://www.dienmayxanh.com/xe-dap" target="_blank"
+                                    title="Chuỗi cửa hàng xe đạp">
+                                    <i class="iconlogo-cycle"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://www.avasport.com/" target="_blank"
+                                    title="Chuỗi cửa hàng thể thao">
+                                    <i class="iconlogo-sport"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://www.avakids.com/" target="_blank"
+                                    title="Chuỗi cửa hàng mẹ và bé">
+                                    <i class="iconlogo-kids"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://www.avafashion.com/" target="_blank"
+                                    title="Chuỗi cửa hàng thời trang">
+                                    <i class="iconlogo-fashion"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://www.thegioididong.com/avaji" target="_blank"
+                                    title="Chuỗi cửa hàng trang sức">
+                                    <i class="iconlogo-ji"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://www.dichvutantam.com/" target="_blank"
+                                    title="Dịch vụ vệ sinh máy lạnh, sửa chữa điện nước, lắp đặt máy lạnh, máy giặt, tivi">
+                                    <i class="iconlogo-tantam"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://www.nhathuocankhang.com/" target="_blank"
+                                    title="Chuỗi nhà thuốc chuẩn GPP">
+                                    <i class="iconlogo-ankhang"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://www.4kfarm.com/" target="_blank"
+                                    title="Nông trại rau sạch">
+                                    <i class="iconlogo-4kfarm"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a rel="nofollow" href="https://vieclam.thegioididong.com/" target="_blank"
+                                    title="Trang tuyển dụng của tập đoàn Thế Giới Di Động">
+                                    <i class="iconlogo-vieclam"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="copyright">
+            <section>
+                <p>
+                    © 2018. Công ty cổ phần Thế Giới Di Động. GPDKKD: 0303217354 do sở KH &amp; ĐT TP.HCM cấp ngày
+                    02/01/2007.
+                    GPMXH: 238/GP-BTTTT do Bộ Thông Tin và Truyền Thông cấp ngày 04/06/2020.<br />
+                    Địa chỉ: 128 Trần Quang Khải, P. Tân Định, Q.1, TP.Hồ Chí Minh. Điện thoại: 028 38125960. Email:
+                    cskh@thegioididong.com. Chịu trách nhiệm nội dung: Huỳnh Văn Tốt.
+                    <a rel="nofollow" href="http://127.0.0.1:5500/thoa-thuan-su-dung-trang-mxh">Xem chính sách sử
+                        dụng</a>
+                </p>
+            </section>
+        </div>
+    </footer>
 </body>
+
 </html>

@@ -49,7 +49,7 @@
             </i>
           </a>
 
-            <form class="form-inline header__search">
+            <form th:action="@{/view-products}" class="form-inline header__search">
               <input type="hidden" name="category" th:if="${param.category != null}"
                   th:value="${param.category}" />
               <input type="hidden" name="manufacturer" th:if="${param.manufacturer != null}"
@@ -162,7 +162,7 @@
           <div class="block-product__content" data-is-recommend-tab="true">
             <ul class="listproduct" data-total="35">
               <li  th:each="product, stat: ${ProductList}" data-id="250261" data-pos="1" class="item">
-                <a th:href="@{/view-products(id=${product.productID})}" class="main-contain">
+                <a th:href="@{'/view-products/' + ${product.productID}}" class="main-contain">
                   <div class="item-img">
                     <img
                       th:src="@{'data:image/;base64,'+${product.imageToShow}}"
