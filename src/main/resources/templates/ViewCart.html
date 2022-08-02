@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="NOINDEX,FOLLOW" name="robots">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://cdn.tgdd.vn/mwgcart/vue-pro/css/desktop/cart.min.2401c51f23c40314328a.css">
+  <link rel="stylesheet" href="https://cdn.tgdd.vn/mwgcart/vue-pro/css/cart.2401c51f23c40314328a.css">
+
+  <link href="/favicon_TGDD.ico" rel="shortcut icon" type="image/x-icon" />
+  <link href="/favicon_TGDD.ico" rel="apple-touch-icon" />
+  <link href="/favicon_TGDD.ico" rel="apple-touch-icon-precomposed" />
+  <link rel="stylesheet" href="cart.css">
+  <link rel="stylesheet" th:href="@{css/cart.css}">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+</head>
+
+<body>
+
+  <div class="header-top-bar">
+    <div class="banner-media">
+      <div class="media-slider" data-size="3">
+        <div class="nav">
+          <div class="prev">
+            <div class="arrow-left"></div>
+          </div>
+          <div class="next">
+            <div class="arrow-right"></div>
+          </div>
+        </div>
+        <div class="item" data-background-color="#010000" data-order="1">
+          <a aria-label="slide" data-cate="0" data-place="1612"
+            href="https://www.thegioididong.com/tin-tuc/san-sale-giua-dem-gia-tot-cuc-em-1450593"><img
+              src="//cdn.tgdd.vn/2022/07/banner/1200-44-1200x44-10.png" alt="ip"></a>
+        </div>
+        <div class="item" data-background-color="#FFC602" data-order="1">
+          <a aria-label="slide" data-cate="0" data-place="1612" href="https://www.thegioididong.com/mua-online-gia-re">
+            <img src="//cdn.tgdd.vn/2022/06/banner/1200-44-1200x44-4.png" alt="Big T7"></a>
+        </div>
+        <div class="item" data-background-color="#FFB700" data-order="2">
+          <a aria-label="slide" data-cate="0" data-place="1612" href="https://www.thegioididong.com/chi-ban-online">
+            <img src="//cdn.tgdd.vn/2022/05/banner/1200-44-1200x44-9.png" alt="Chỉ online"></a>
+        </div>
+      </div>
+      <style>
+        .banner-media {
+          background-color: #010000;
+        }
+      </style>
+
+    </div>
+  </div>
+  <header class="header" data-sub="0">
+    <div class="header__top">
+      <div>
+        <a th:href="@{/}" class="header__logo">
+          <i class="iconnewglobal-logo">
+            <img src="https://vi.wikipedia.org/wiki/T%E1%BA%ADp_tin:The_gioi_di_dong_logo.svg" alt="">
+          </i>
+        </a>
+
+        <form th:action="@{/view-products}" class="form-inline header__search">
+          <input type="hidden" name="category" th:if="${param.category != null}" th:value="${param.category}" />
+          <input type="hidden" name="manufacturer" th:if="${param.manufacturer != null}"
+            th:value="${param.manufacturer}" />
+          <input class="input-search" type="name" name="name" placeholder="Bạn tìm gì..." th:value="${param.name}"
+            autocomplete="off" maxlength="100" />
+
+          <button type="submit">
+            <i class="icon-search"></i>
+          </button>
+          <div id="search-result"></div>
+        </form>
+        <a th:href="@{/view-cart}" class="header__cart menu-info">
+          <div class="box-cart">
+            <i class="iconnewglobal-cart"></i>
+            <span class="cart-number"></span>
+          </div>
+          <span>Giỏ hàng</span>
+        </a>
+        <div class="header__listtop">
+          <div class="divitem">
+            <a href="https://www.thegioididong.com/tin-tuc">24h<br />Công nghệ</a>
+          </div>
+          <div class="bordercol"></div>
+          <div class="divitem">
+            <a href="https://www.thegioididong.com/hoi-dap">Hỏi Đáp</a>
+          </div>
+          <div class="bordercol"></div>
+          <div class="divitem">
+            <a href="https://www.thegioididong.com/game-app">Game App</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="header__main">
+      <div>
+        <ul class="main-menu">
+          <li th:each="category: ${cats}">
+            <a th:href="@{/view-products(category=${category.categoryID})}">
+              <span th:utext="${category.categoryName}"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="container mt-5 p-3 rounded cart">
+      <div class="row no-gutters">
+        <div class="col-md-8">
+          <div class="product-details mr-2">
+            <div class="d-flex flex-row align-items-center">
+              <i class="fa fa-long-arrow-left">
+                <a class="ml-2" th:href="@{/}">Mua thêm hàng</a>
+
+              </i>
+              <a style="margin-left: 25rem ;" th:href="@{/delete-cookie}">Gỡ toàn bộ sản phẩm</a>
+            </div>
+
+            <h2 class="mb-0"><strong>Shopping cart</strong></h2>
+
+
+
+            <!--If no product-->
+            <div>
+              <div th:if="${CartItem == null}">
+                <h3 style="margin-top: 1rem;"><span> Giỏ hàng không có sản phẩm nào</span></h3>
+              </div>
+            </div>
+
+            <!--Có product-->
+            <div>
+
+              <div class="d-flex justify-content-between
+              align-items-center mt-3 p-2 items rounded" th:if="${CartItem != null}" th:each="item : ${CartItem}">
+                <div class="d-flex flex-row">
+                  <div th:each="img : ${ImageAttach}">
+                    <img class="rounded"
+                      th:if="${#strings.equals(img.forProductID, item.productID) && item.colorID == img.forColorID}"
+                      th:src="@{'data:image/;base64,'+${img.imageToShow}}" width="40">
+                  </div>
+
+                  <div class="ml-2">
+                    <span class="font-weight-bold d-block" th:utext="${item.productName}"></span>
+                    <span class="spec" th:if="${item.colorName != null}" th:utext="${item.colorName}"></span>
+                  </div>
+                </div>
+                <div class="d-flex flex-row align-items-center">
+                  <span class="d-block" th:utext="${item.quantity}"></span>
+                  <span class="d-block ml-5 font-weight-bold"
+                    th:utext="${#numbers.formatInteger(item.price, 0, 'POINT')} + 'đ'"></span>
+
+                  <a th:href="@{/delete-product-from-cart(pID=${item.productID}, colorID=${item.colorID})}">
+                    <i class="fa fa-trash-o ml-3 text-black-50">
+                    </i>
+                  </a>
+                </div>
+
+                <!-- <div class=" d-flex justify-content-between information">
+                  <span
+                    th:utext="'Tổng giá '+ ${TotalItem} + ' sản phẩm:' + ${#numbers.formatInteger(CartItemTotalPrice, 0, 'POINT')} + 'đ'">
+                  </span>
+                </div> -->
+              </div>
+              <div class="d-flex justify-content-between information mt-3">
+                <div th:if="${TotalItem != null}">
+                  <p class="lead" th:utext="'Tổng giá '+ ${TotalItem} + ' sản phẩm:'">
+                  </p>
+                </div>
+                <div th:if="${CartItemTotalPrice != null}">
+                  <p class="lead" th:utext="${#numbers.formatInteger(CartItemTotalPrice, 0, 'POINT')} + 'đ'">
+                  </p>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+            <!-- <div th:if="${CartItem != null}">
+              <div th:each="item : ${CartItem}">
+                <div th:each="img : ${ImageAttach}">
+                  <img th:if="${#strings.equals(img.forProductID, item.productID) && item.colorID == img.forColorID}"
+                    th:src="@{'data:image/;base64,'+${img.imageToShow}}" width="80px" height="80px">
+                </div>
+                <br>
+                <span th:utext="${item.productName}"></span>
+                <br>
+                <span th:if="${item.colorName != null}" th:utext="'Màu:' + ${item.colorName}"></span>
+                <br>
+                <span th:utext="${#numbers.formatInteger(item.price, 0, 'POINT')} + 'đ'"></span>
+                <br>
+                <span th:utext="'Số lượng:' + ${item.quantity}"></span>
+                <br>
+                <a th:href="@{/delete-product-from-cart(pID=${item.productID}, colorID=${item.colorID})}">
+                  <button type="submit">Bỏ sản phẩm</button>
+                </a>
+                <br>
+              </div>
+              <br>
+              <span
+                th:utext="'Tổng giá '+ ${TotalItem} + ' sản phẩm:' + ${#numbers.formatInteger(CartItemTotalPrice, 0, 'POINT')} + 'đ'">
+              </span>
+              </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </section>
+
+
+
+
+
+
+
+</body>
+
+</html>

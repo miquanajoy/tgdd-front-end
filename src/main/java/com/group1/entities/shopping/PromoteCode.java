@@ -1,21 +1,19 @@
-package com.group1.dto;
+package com.group1.entities.shopping;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class PromotionsList implements Serializable{
+public class PromoteCode implements Serializable {
 
 	private Integer promoteCodeID;
-	
-	private Set<Object> billsWithPromoteID;
-	
+
+	private Set<ShoppingBill> billsWithPromoteID;
+
 	private String promoteCodeName;
-	
+
 	private String promoteCodeDescription;
 
 	private Integer discountPercent;
@@ -33,12 +31,25 @@ public class PromotionsList implements Serializable{
 	private LocalDateTime endDateInput;
 
 	private Boolean enabled;
+
+	public PromoteCode() {
+	}
 	
-	public PromotionsList() {
-		
+	public PromoteCode(Integer promoteCodeID, String promoteCodeName, String promoteCodeDescription,
+			Integer discountPercent, Integer discountMaxAmount, LocalDateTime startDate, LocalDateTime endDate,
+			Boolean enabled) {
+		super();
+		this.promoteCodeID = promoteCodeID;
+		this.promoteCodeName = promoteCodeName;
+		this.promoteCodeDescription = promoteCodeDescription;
+		this.discountPercent = discountPercent;
+		this.discountMaxAmount = discountMaxAmount;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.enabled = enabled;
 	}
 
-	public PromotionsList(Integer promoteCodeID, Set<Object> billsWithPromoteID, String promoteCodeName,
+	public PromoteCode(Integer promoteCodeID, Set<ShoppingBill> billsWithPromoteID, String promoteCodeName,
 			String promoteCodeDescription, Integer discountPercent, Integer discountMaxAmount, LocalDateTime startDate,
 			LocalDateTime endDate, LocalDateTime startDateInput, LocalDateTime endDateInput, Boolean enabled) {
 		super();
@@ -63,11 +74,11 @@ public class PromotionsList implements Serializable{
 		this.promoteCodeID = promoteCodeID;
 	}
 
-	public Set<Object> getBillsWithPromoteID() {
+	public Set<ShoppingBill> getBillsWithPromoteID() {
 		return billsWithPromoteID;
 	}
 
-	public void setBillsWithPromoteID(Set<Object> billsWithPromoteID) {
+	public void setBillsWithPromoteID(Set<ShoppingBill> billsWithPromoteID) {
 		this.billsWithPromoteID = billsWithPromoteID;
 	}
 
